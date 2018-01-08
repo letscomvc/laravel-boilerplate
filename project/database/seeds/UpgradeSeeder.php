@@ -11,6 +11,6 @@ class UpgradeSeeder extends Seeder
      */
     public function run()
     {
-
+        $this->call(PermissionsTableSeeder::class);
     }
 }
