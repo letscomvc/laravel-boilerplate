@@ -5,9 +5,9 @@ use App\Base\Criteria;
 
 class OrderByIdCriteria extends Criteria
 {
-    public function apply($model, Repository $repository)
+    public function apply($queryBuilder, Repository $repository)
     {
-        $query = $model->orderBy('id', 'desc');
-        return $query;
+        $queryBuilder = $queryBuilder->orderBy('id', 'desc');
+        return $queryBuilder;
     }
 }
