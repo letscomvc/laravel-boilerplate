@@ -11,6 +11,9 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+/*
+ *
+ * SHOULD be empty file!
+ * Check in 'web' folder to create new routes.
+ *
+ */
