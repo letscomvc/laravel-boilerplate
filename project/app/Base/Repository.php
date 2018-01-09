@@ -7,7 +7,7 @@ use App\Base\Criteria;
 use App\Contracts\Repositories\CriteriaContract;
 use App\Exceptions\Repositories\RepositoryException;
 
-abstract class BaseRepository implements CriteriaContract
+abstract class Repository implements CriteriaContract
 {
 
     /**
@@ -34,14 +34,14 @@ abstract class BaseRepository implements CriteriaContract
      * @param Collection $criterias
      * @throws RepositoryException
      */
-    public function __construct(Collection $criterias)
+    public function __construct()
     {
-        $this->criteria = $criterias;
+        $this->criteria = collect();
         $this->resetScope();
         $this->model = $this->makeModel();
     }
 
-    abstract public function getClass();
+    abstract protected function getClass();
 
     public function all($columns = ['*'])
     {
