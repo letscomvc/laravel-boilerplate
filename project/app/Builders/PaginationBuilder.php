@@ -1,9 +1,12 @@
 <?php
 namespace App\Builders;
 
-use App\Base\Presenter;
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+
+use App\Base\Presenter;
+
+use App\Repositories\Criterias\Common\OrderResolvedByUrlCriteria;
 
 class PaginationBuilder
 {
@@ -16,7 +19,7 @@ class PaginationBuilder
     public function __construct()
     {
         $this->repository = null;
-        $this->criterias = collect();
+        $this->criterias = collect($this->getDefaultCriterias());
         $this->presenter = null;
         $this->perPage = 30;
     }
@@ -96,7 +99,7 @@ class PaginationBuilder
         } else {
             $data = $this->presenter->get($this->data);
         }
-        
+
         return $this->getPaginatedCollection($data);
     }
 
@@ -111,5 +114,12 @@ class PaginationBuilder
         $currentPageItems = $items->slice(($currentPage - 1) * $perPage, $perPage);
 
         return new LengthAwarePaginator($currentPageItems, count($items), $perPage);
+    }
+
+    private function getDefaultCriterias()
+    {
+        $orderResolvedByUrlCriteria = new OrderResolvedByUrlCriteria();
+
+        return [$orderResolvedByUrlCriteria];
     }
 }

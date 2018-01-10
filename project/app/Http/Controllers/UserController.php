@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Repositories\UserRepository;
-use App\Builders\PaginationBuilder;
 use App\Presenters\UserPresenter;
+use App\Builders\PaginationBuilder;
+use App\Repositories\UserRepository;
 
 class UserController extends Controller
 {
