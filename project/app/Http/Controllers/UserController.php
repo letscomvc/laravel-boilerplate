@@ -23,8 +23,7 @@ class UserController extends Controller
     public function pagination()
     {
         $pagination = new PaginationBuilder();
-        $pagination->repository(new UserRepository())
-                   ->presenter(new UserPresenter());
+        $pagination->repository(new UserRepository());
 
         return $pagination->build();
     }

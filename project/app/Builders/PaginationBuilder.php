@@ -52,9 +52,9 @@ class PaginationBuilder
     public function criterias($criterias)
     {
         if ($criterias instanceof Collection) {
-            $this->criterias = $criterias;
+            $this->criterias->merge($criterias);
         } else {
-            $this->criterias = collect($criterias);
+            $this->criterias->merge(collect($criterias));
         }
 
         return $this;
@@ -118,8 +118,8 @@ class PaginationBuilder
 
     private function getDefaultCriterias()
     {
-        $orderResolvedByUrlCriteria = new OrderResolvedByUrlCriteria();
+        $default_criterias[] = new OrderResolvedByUrlCriteria();
 
-        return [$orderResolvedByUrlCriteria];
+        return $default_criterias;
     }
 }
