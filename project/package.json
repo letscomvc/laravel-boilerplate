@@ -18,5 +18,8 @@
         "lodash": "^4.17.4",
         "vue": "^2.5.7"
     },
-    "dependencies": {}
+    "dependencies": {
+        "vue-2-bulma-pagination": "0.0.7",
+        "vue-pagination-2": "^1.3.1"
+    }
 }
