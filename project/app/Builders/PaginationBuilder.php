@@ -131,6 +131,20 @@ class PaginationBuilder
         }
     }
 
+    /**
+     * Define critérios padrões para todas as paginações.
+     *
+     * Os critérios podem ser anulados utilizando o método 'cleanCriterias'.
+     *
+     * @return array
+     */
+    private function getDefaultCriterias()
+    {
+        $default_criterias[] = new OrderResolvedByUrlCriteria();
+
+        return $default_criterias;
+    }
+
     private function buildForRepository()
     {
         foreach ($this->criterias as $criteria) {
@@ -180,12 +194,5 @@ class PaginationBuilder
         }
 
         return new LengthAwarePaginator($currentPageItems, $total, $perPage);
-    }
-
-    private function getDefaultCriterias()
-    {
-        $default_criterias[] = new OrderResolvedByUrlCriteria();
-
-        return $default_criterias;
     }
 }
