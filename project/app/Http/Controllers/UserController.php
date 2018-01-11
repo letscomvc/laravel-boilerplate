@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Presenters\UserPresenter;
-use App\Builders\PaginationBuilder;
 use App\Repositories\UserRepository;
 
 class UserController extends Controller
@@ -20,11 +19,9 @@ class UserController extends Controller
         return view('users.index');
     }
 
-    public function pagination()
+    protected function getPagination()
     {
-        $pagination = new PaginationBuilder();
-        $pagination->repository(new UserRepository());
-
-        return $pagination->build();
+        $this->pagination->repository(new UserRepository())
+                         ->presenter(new UserPresenter);
     }
 }

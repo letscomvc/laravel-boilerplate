@@ -90,6 +90,12 @@ abstract class Repository implements CriteriaContract
         return $this->model->paginate($perPage, $columns);
     }
 
+    public function count()
+    {
+        $this->applyCriteria();
+        return $this->model->count();
+    }
+
     /**
      * @return \Illuminate\Database\Eloquent\Builder
      * @throws RepositoryException

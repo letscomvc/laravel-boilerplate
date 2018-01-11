@@ -22,7 +22,7 @@
                     </tr>
                 </tbody>
             </table>
-            @include('shared.partials._pagination');
+            @include('shared.partials._pagination')
         </div>
     </template>
 @endsection
