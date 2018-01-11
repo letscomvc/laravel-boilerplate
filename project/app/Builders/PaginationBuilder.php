@@ -8,6 +8,7 @@ use App\Base\Presenter;
 use App\Base\Repository;
 
 use App\Repositories\Criterias\Common\OrderResolvedByUrlCriteria;
+use App\Repositories\Criterias\Common\SearchResolvedByUrlCriteria;
 
 class PaginationBuilder
 {
@@ -141,6 +142,7 @@ class PaginationBuilder
     private function getDefaultCriterias()
     {
         $default_criterias[] = new OrderResolvedByUrlCriteria();
+        $default_criterias[] = new SearchResolvedByUrlCriteria();
 
         return $default_criterias;
     }
