@@ -52,48 +52,115 @@ class Upgrade extends Command
         $agree = $this->confirm('Tem certeza que deseja atualizar a aplicação ?');
 
         if ($agree) {
-            $migrationMessages = ['success'=>'Migrações concluidas.', 'failed' => 'Erro ao rodar migrações'];
-            $this->executeWithMessages('migrate', [], $migrationMessages);
-
-            $seedMessages = ['success'=> 'Seeds concluidas.', 'failed' => 'Erro ao rodar Seed de atualização.'];
-            $this->executeWithMessages('db:seed', ['--class' => 'UpgradeSeeder'], $seedMessages);
-
-            if (! $this->option('no-cache')){
-                $cacheRouteMessages = ['success'=> 'Cache das rotas foi criado.', 'failed' => 'Erro ao criar cache das rotas.'];
-                $this->executeWithMessages('route:cache', [], $cacheRouteMessages);
-
-                $cacheConfigurationsMessages = ['success'=> 'Cache das configurações foi criado.', 'failed' => 'Erro ao criar cache das configurações.'];
-                $this->executeWithMessages('config:cache', [], $cacheConfigurationsMessages);
-
-            } else {
-                $clearCacheRouteMessages = ['success'=> 'Cache das rotas foi apagado.'];
-                $this->executeWithMessages('route:clear', [], $clearCacheRouteMessages);
-
-                $clearCacheConfigurationMessages = ['success'=> 'Cache das configurações foi apagado.'];
-                $this->executeWithMessages('config:clear', [], $clearCacheConfigurationMessages);
-
-                $clearCacheViewMessages = ['success'=> 'Cache das views foi apagado.'];
-                $this->executeWithMessages('view:clear', [], $clearCacheViewMessages);
-            }
-
-            $optimizeMessages = ['success'=> 'Framework otimizado.', 'failed' => 'Erro ao otimizar framework.'];
-            $this->executeWithMessages('optimize', [], $optimizeMessages);
-
+            $this->executeCommands();
             $this->info('Pronto!');
         } else {
             $this->error('Cancelado.');
         }
     }
 
+    private function executeCommands()
+    {
+        $this->executeMigrate();
+        $this->executeUpgradeSeeder();
+
+        if (! $this->option('no-cache')) {
+            $this->executeCache();
+        } else {
+            $this->executeNoCache();
+        }
+
+        $this->executeOptimization();
+    }
+
+    private function executeMigrate()
+    {
+        $migrationMessages = [
+            'success' => 'Migrações concluidas.',
+            'failed' => 'Erro ao rodar migrações'
+        ];
+        $this->executeWithMessages('migrate', [], $migrationMessages);
+    }
+
+    private function executeUpgradeSeeder()
+    {
+        $seedMessages = [
+            'success'=> 'Seeds concluidas.',
+            'failed' => 'Erro ao rodar Seed de atualização.'
+        ];
+        $this->executeWithMessages('db:seed', ['--class' => 'UpgradeSeeder'], $seedMessages);
+    }
+
+    private function executeCache()
+    {
+        $this->executeCacheRoutes();
+        $this->executeCacheMessages();
+    }
+
+    private function executeCacheRoutes()
+    {
+        $cacheConfigurationsMessages = [
+            'success'=> 'Cache das configurações foi criado.',
+            'failed' => 'Erro ao criar cache das configurações.'
+        ];
+        $this->executeWithMessages('config:cache', [], $cacheConfigurationsMessages);
+    }
+
+    private function executeCacheMessages()
+    {
+        $cacheRouteMessages = [
+            'success'=> 'Cache das rotas foi criado.',
+            'failed' => 'Erro ao criar cache das rotas.'
+        ];
+        $this->executeWithMessages('route:cache', [], $cacheRouteMessages);
+    }
+
+    private function executeNoCache()
+    {
+        $this->executeClearViews();
+        $this->executeClearRoutes();
+        $this->executeClearConfigurations();
+    }
+
+    private function executeClearViews()
+    {
+        $clearCacheRouteMessages = ['success' => 'Cache das rotas foi apagado.'];
+        $this->executeWithMessages('route:clear', [], $clearCacheRouteMessages);
+    }
+
+    private function executeClearRoutes()
+    {
+        $clearCacheConfigurationMessages = ['success' => 'Cache das configurações foi apagado.'];
+        $this->executeWithMessages('config:clear', [], $clearCacheConfigurationMessages);
+    }
+
+    private function executeClearConfigurations()
+    {
+        $clearCacheViewMessages = ['success' => 'Cache das views foi apagado.'];
+        $this->executeWithMessages('view:clear', [], $clearCacheViewMessages);
+    }
+
+    private function executeOptimization()
+    {
+        $optimizeMessages = [
+            'success'=> 'Framework otimizado.',
+            'failed' => 'Erro ao otimizar framework.'
+        ];
+        $this->executeWithMessages('optimize', [], $optimizeMessages);
+    }
+
     private function executeWithMessages($call, $options, $messages = [])
     {
         try {
             $this->callSilent($call, $options);
-            if (isset($messages['success']))
+
+            if (isset($messages['success'])) {
                 $this->info($messages['success']);
-        } catch(\Exception $e) {
-            if (isset($messages['failed']))
+            }
+        } catch (\Exception $e) {
+            if (isset($messages['failed'])) {
                 $this->error($messages['failed']);
+            }
         }
     }
 }
