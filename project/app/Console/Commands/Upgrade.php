@@ -64,10 +64,10 @@ class Upgrade extends Command
         $this->executeMigrate();
         $this->executeUpgradeSeeder();
 
-        if (! $this->option('no-cache')) {
-            $this->executeCache();
-        } else {
+        if ($this->option('no-cache')) {
             $this->executeNoCache();
+        } else {
+            $this->executeCache();
         }
 
         $this->executeOptimization();
