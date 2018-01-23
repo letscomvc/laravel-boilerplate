@@ -2,9 +2,9 @@
 namespace App\Builders;
 
 use Illuminate\Support\Collection;
+use Illuminate\Http\Resources\Json\Resource;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-use App\Base\Presenter;
 use App\Base\Repository;
 
 use App\Repositories\Criterias\Common\OrderResolvedByUrlCriteria;
@@ -14,7 +14,7 @@ class PaginationBuilder
 {
     private $data;
     private $perPage;
-    private $presenter;
+    private $resource;
     private $criterias;
     private $repository;
     private $originalRepository;
@@ -22,8 +22,8 @@ class PaginationBuilder
     public function __construct()
     {
         $this->perPage    = config('pagination.per_page_default');
+        $this->resource   = null;
         $this->criterias  = collect($this->getDefaultCriterias());
-        $this->presenter  = null;
         $this->repository = null;
     }
 
@@ -56,21 +56,17 @@ class PaginationBuilder
     }
 
     /**
-     * Define um Presenter para os ítens paginados
+     * Define um Resource para os ítens paginados
      *
-     * Este método permite definir um único Presenter para formatar
+     * Este método permite definir um único Resource para formatar
      * todos os elementos paginados.
      *
-     * @param App\Base\Presenter $presenter
+     * @param Illuminate\Http\Resources\Json\Resource $resource
      * @return App\Builders\PaginationBuilder
      */
-    public function presenter($presenter)
+    public function resource($resource)
     {
-        if (!$presenter instanceof Presenter) {
-            throw new \Exception("The presenter passed as argument is not a instance of App\Base\Presenter", 1);
-        }
-
-        $this->presenter = $presenter;
+        $this->resource = $resource;
 
         return $this;
     }
@@ -126,10 +122,15 @@ class PaginationBuilder
     public function build()
     {
         if ($this->repository != null) {
-            return $this->buildForRepository();
+            $paginated = $this->buildForRepository();
         } else {
-            return $this->buildForDataCollection();
+            $paginated = $this->buildForDataCollection();
         }
+
+        if ($this->resource)
+            return $this->resource::collection($paginated);
+
+        return Resource::collection($paginated);
     }
 
     /**
@@ -153,28 +154,13 @@ class PaginationBuilder
             $this->repository->pushCriteria($criteria);
         }
 
-        if ($this->presenter == null) {
-            return $this->repository->paginate($this->perPage);
-        }
-
-        $total = $this->repository->count();
-        $data  = $this->repository->paginate($this->perPage)->items();
-        $data  = collect($data);
-
-        $presented_data = $this->presenter->get($data);
-        return $this->getPaginationFromCollection($presented_data, $total);
+        return $this->repository->paginate($this->perPage);
     }
 
     private function buildForDataCollection()
     {
-        if (!$this->data) {
+        if (! $this->data) {
             $this->data = collect();
-        }
-
-        if ($this->presenter == null) {
-            $data = $this->data;
-        } else {
-            $data = $this->presenter->get($this->data);
         }
 
         return $this->getPaginationFromCollection($data);
