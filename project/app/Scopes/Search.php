@@ -4,11 +4,9 @@ namespace App\Scopes;
 
 trait Search
 {
-    private function addCondition($index, $field, $query, $search)
+    private function addConditions($query, $search, $searchBy)
     {
-        if ($index == 0) {
-            $query->where($field, 'LIKE', "%$search%");
-        } else {
+        foreach ($searchBy as $field) {
             $query->orWhere($field, 'LIKE', "%$search%");
         }
 
@@ -17,13 +15,14 @@ trait Search
 
     public function scopeSearch($query, $search)
     {
-        if ($this->searchBy) {
+        if (isset($this->searchBy)) {
             if (is_array($this->searchBy)) {
-                foreach ($this->searchBy as $index => $field) {
-                    $query = $this->addCondition($index, $field, $query, $search);
-                }
+                $searchBy = $this->searchBy;
+                $query->where(function($query) use ($search, $searchBy) {
+                    $this->addConditions($query, $search, $searchBy);
+                });
             } else {
-                return $query->where($this->searchBy, 'LIKE', "%$search%");
+                $query->where($this->searchBy, 'LIKE', "%$search%");
             }
         }
     }
