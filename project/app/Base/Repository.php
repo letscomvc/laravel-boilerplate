@@ -9,7 +9,6 @@ use App\Exceptions\Repositories\RepositoryException;
 
 abstract class Repository implements CriteriaContract
 {
-
     /**
      * @var
      */
@@ -106,7 +105,8 @@ abstract class Repository implements CriteriaContract
         $model = new $class($options);
 
         if (!$model instanceof Model) {
-            throw new RepositoryException("Class {$this->model()} must be an instance of Illuminate\\Database\\Eloquent\\Model");
+            $message = "Class {$this->model()} must be an instance of Illuminate\\Database\\Eloquent\\Model";
+            throw new RepositoryException($message);
         }
         return $model->newQuery();
     }
