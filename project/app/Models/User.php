@@ -20,7 +20,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $searchBy = [
-        'name', 'email'
+        'name', 'email',
     ];
 
     /**
