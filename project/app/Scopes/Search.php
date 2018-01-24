@@ -11,7 +11,7 @@ trait Search
 
     private function addConditionInsensitive($query, $column, $search)
     {
-        $query->orWhereRaw("LOWER({$column}) LIKE LOWER(?)", "%$search%");
+        $query->orWhereRaw("LOWER(CAST({$column} as VARCHAR)) LIKE LOWER(?)", "%$search%");
     }
 
     private function addConditions($query, $search, $searchBy)

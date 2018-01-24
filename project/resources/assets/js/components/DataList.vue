@@ -1,10 +1,24 @@
 <script>
 export default {
-    template: '#model-list',
+    template: '#data-list',
 
     props: {
         dataSource: {
             type: String,
+        },
+
+        urlCreate: {
+            type: String,
+            default() {
+                return null;
+            },
+        },
+
+        deleteMessage: {
+            type: String,
+            default() {
+                return 'Tem certeza que deseja apagar este registro ?';
+            },
         },
     },
 
@@ -25,8 +39,7 @@ export default {
                 query_params += '&page=' + this.currentPage;
             }
 
-            let url = this.dataSource + query_params;
-
+            const url = this.dataSource + query_params;
             return url;
         },
 
@@ -70,7 +83,7 @@ export default {
                 arrow_classes = 'fa fa-angle-down order-arrow'
             }
 
-            let arrow = document.createElement('i');
+            const arrow = document.createElement('i');
             arrow.className = arrow_classes;
 
             return arrow;
@@ -106,7 +119,7 @@ export default {
         fetchData() {
             axios.get(this.fetch_url).then((response) => {
                 this.items = response.data.data;
-                this.setPagination(response.data);
+                this.setPagination(response.data.meta);
             })
         },
 
@@ -124,8 +137,15 @@ export default {
             }
         },
 
-        getPageButtons() {
-            let buttons = [];
+        confirmDelete(link, message = undefined) {
+            if (message == undefined){
+                message = this.deleteMessage;
+            }
+
+            const isConfirmed = confirm(message);
+
+            if (isConfirmed)
+                axios.delete(link);
 
         },
 

@@ -17,6 +17,13 @@ class User extends Resource
         return [
             'name' => $this->name,
             'email' => $this->email,
+            'created_at' => format_date($this->created_at),
+
+            'links' => [
+                'edit' => $this->when(true, 'asjoasd'),
+                'show' => $this->when(true, 'asjoasd'),
+                'destroy' => $this->when(true, route('users.destroy', $this->id)),
+            ],
         ];
     }
 }

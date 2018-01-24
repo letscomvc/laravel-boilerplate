@@ -12,18 +12,18 @@ use App\Repositories\Criterias\Common\SearchResolvedByUrlCriteria;
 
 class PaginationBuilder
 {
-    private $data;
     private $perPage;
     private $resource;
     private $criterias;
+    private $collection;
     private $repository;
     private $originalRepository;
 
     public function __construct()
     {
-        $this->perPage    = config('pagination.per_page_default');
-        $this->resource   = null;
-        $this->criterias  = collect($this->getDefaultCriterias());
+        $this->perPage = config('pagination.per_page_default');
+        $this->resource = null;
+        $this->criterias = collect($this->getDefaultCriterias());
         $this->repository = null;
     }
 
@@ -35,9 +35,10 @@ class PaginationBuilder
      */
     public function repository(Repository $repository)
     {
-        $this->data = null;
+        $this->collection = null;
         $this->repository = $repository;
         $this->originalRepository = clone $repository;
+
         return $this;
     }
 
@@ -49,9 +50,9 @@ class PaginationBuilder
      */
     public function fromCollection(Collection $collection)
     {
+        $this->collection = $collection;
         $this->repository = null;
         $this->originalRepository = null;
-        $this->data = $collection;
         return $this;
     }
 
@@ -110,7 +111,7 @@ class PaginationBuilder
      */
     public function perPage(int $perPage)
     {
-        $this->per_page = $perPage;
+        $this->perPage = $perPage;
         return $this;
     }
 
@@ -124,11 +125,12 @@ class PaginationBuilder
         if ($this->repository != null) {
             $paginated = $this->buildForRepository();
         } else {
-            $paginated = $this->buildForDataCollection();
+            $paginated = $this->buildForCollection();
         }
 
-        if ($this->resource)
+        if ($this->resource) {
             return $this->resource::collection($paginated);
+        }
 
         return Resource::collection($paginated);
     }
@@ -157,13 +159,13 @@ class PaginationBuilder
         return $this->repository->paginate($this->perPage);
     }
 
-    private function buildForDataCollection()
+    private function buildForCollection()
     {
-        if (! $this->data) {
-            $this->data = collect();
+        if (! $this->collection) {
+            $this->collection = collect();
         }
 
-        return $this->getPaginationFromCollection($data);
+        return $this->getPaginationFromCollection($this->collection);
     }
 
     private function getPaginationFromCollection($collection, $total = null)

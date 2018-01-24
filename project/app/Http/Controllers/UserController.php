@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Repositories\UserRepository;
-
 use App\Http\Resources\User as UserResource;
 
 class UserController extends Controller
@@ -20,9 +19,15 @@ class UserController extends Controller
         return view('users.index');
     }
 
+    public function destroy()
+    {
+        
+    }
+
     protected function getPagination()
     {
         $this->pagination->repository(new UserRepository())
-                         ->resource(UserResource::class);
+                         ->resource(UserResource::class)
+                         ->perPage(30);
     }
 }

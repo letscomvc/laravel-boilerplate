@@ -2,14 +2,26 @@
 
 @section('content')
     <div class="container">
-        <model-list data-source="{{ route('users.pagination') }}" />
+        <data-list data-source="{{ route('pagination.users') }}"
+                   url-create="we"
+                   delete-message="Tem certeza que deseja apagar este registro ?"
+                   />
     </div>
 @endsection
 
 @section('custom-template')
-    <template id="model-list" slot-scope="modelScope">
+    <template id="data-list" slot-scope="modelScope">
         <div>
-            <input type="text" v-model="query">
+            <div class="row">
+                <div class="col-md-6">
+                    <a v-if="urlCreate" :href="urlCreate">
+                        <button class="btn btn-primary">NOVO</button>
+                    </a>
+                </div>
+                <div class="col-md-6">
+                    <input type="text" v-model="query" class="form-control">
+                </div>
+            </div>
             <table class="table">
                 <thead>
                     <tr>

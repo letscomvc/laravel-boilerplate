@@ -55,6 +55,8 @@ class RouteServiceProvider extends ServiceProvider
 
         $this->mapAuthenticatedWebRoutes();
 
+        $this->mapPaginationRoutes();
+
         $this->mapAjaxRoutes();
     }
 
@@ -77,6 +79,14 @@ class RouteServiceProvider extends ServiceProvider
         Route::middleware(['web', 'auth'])
              ->namespace($this->namespace)
              ->group(base_path('routes/web/authenticated.php'));
+    }
+
+    protected function mapPaginationRoutes()
+    {
+        Route::middleware(['web', 'auth'])
+             ->namespace($this->namespace)
+             ->prefix('pagination')
+             ->group(base_path('routes/web/pagination.php'));
     }
 
     protected function mapAjaxRoutes()
