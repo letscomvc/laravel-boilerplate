@@ -3,8 +3,9 @@
 @section('content')
     <div class="container">
         <data-list data-source="{{ route('pagination.users') }}"
-                   url-create="we"
                    delete-message="Tem certeza que deseja apagar este registro ?"
+                   url-create="we"
+                   label-create="Novo usuário"
                    />
     </div>
 @endsection
@@ -15,7 +16,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <a v-if="urlCreate" :href="urlCreate">
-                        <button class="btn btn-primary">NOVO</button>
+                        <button class="btn btn-primary">@{{labelCreate}}</button>
                     </a>
                 </div>
                 <div class="col-md-6">
@@ -31,6 +32,7 @@
                 <tbody>
                     <tr v-for="(item, index) in items" :key="index">
                         @include('users.partials._body')
+                        <td>@include('shared.partials._buttons_actions')</td>
                     </tr>
                 </tbody>
             </table>

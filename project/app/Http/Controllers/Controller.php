@@ -7,6 +7,7 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
+use App\Helpers\ChooseReturn;
 use App\Builders\PaginationBuilder;
 
 class Controller extends BaseController
@@ -28,5 +29,10 @@ class Controller extends BaseController
 
     protected function getPagination()
     {
+    }
+
+    public function chooseReturn($type, $message, $route_to_redirect = null)
+    {
+        return ChooseReturn::choose($type, $message, $route_to_redirect);
     }
 }

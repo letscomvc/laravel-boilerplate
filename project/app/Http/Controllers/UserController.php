@@ -19,9 +19,16 @@ class UserController extends Controller
         return view('users.index');
     }
 
-    public function destroy()
+    public function destroy($id)
     {
-        
+        $deleted_user = (new UserRepository())->delete($id);
+        if ($deleted_user) {
+            $message = find_message('user.success.destroy');
+            return $this->chooseReturn('success', $message, 'users.index');
+        }
+
+        $message = find_message('user.error.destroy');
+        return $this->chooseReturn('error', $message, 'users.index');
     }
 
     protected function getPagination()

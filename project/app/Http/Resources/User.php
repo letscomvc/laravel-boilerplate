@@ -20,8 +20,8 @@ class User extends Resource
             'created_at' => format_date($this->created_at),
 
             'links' => [
-                'edit' => $this->when(true, 'asjoasd'),
-                'show' => $this->when(true, 'asjoasd'),
+                'edit' => $this->when(true, route('users.edit', $this->id)),
+                'show' => $this->when(true, route('users.show', $this->id)),
                 'destroy' => $this->when(true, route('users.destroy', $this->id)),
             ],
         ];

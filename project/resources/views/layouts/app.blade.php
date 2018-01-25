@@ -17,6 +17,7 @@
 </head>
 <body>
     <div id="app">
+        @include('layouts.flash-messages')
         <nav class="navbar navbar-default navbar-static-top">
             <div class="container">
                 <div class="navbar-header">
@@ -73,6 +74,7 @@
                 </div>
             </div>
         </nav>
+        <vue-snotify></vue-snotify>
 
         @yield('custom-template')
         @yield('content')

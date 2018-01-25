@@ -14,6 +14,13 @@ export default {
             },
         },
 
+        labelCreate: {
+            type: String,
+            default() {
+                return 'Cadastrar novo';
+            },
+        },
+
         deleteMessage: {
             type: String,
             default() {
@@ -137,16 +144,30 @@ export default {
             }
         },
 
+        handleDelete(link) {
+             axios.delete(link).then((response) => {
+                const status = response.data;
+                this.$snotify[status.type](status.message);
+                this.fetchData();
+             });
+        },
+
         confirmDelete(link, message = undefined) {
+
             if (message == undefined){
                 message = this.deleteMessage;
             }
 
-            const isConfirmed = confirm(message);
-
-            if (isConfirmed)
-                axios.delete(link);
-
+            this.$snotify.confirm(message, 'Excluir registro', {
+              timeout: 5000,
+              showProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: false,
+              buttons: [
+                {text: 'Sim', action: () => this.handleDelete(link) , bold: false},
+                {text: 'Não'},
+              ]
+            });
         },
 
         changePage(p) {
