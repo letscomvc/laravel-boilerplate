@@ -5,6 +5,8 @@
             'show' => 'Ver',
             'edit' => 'Editar',
             'destroy' => 'Apagar',
+            'create' => 'Cadastrar',
+            'update' => 'Salvar',
         ],
 
         'new' => [

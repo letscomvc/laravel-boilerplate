@@ -41,7 +41,7 @@ const app = new Vue({
                 const message = flashNode.innerHTML;
                 this.throwFlashMessage(type, message);
             }
-            this.handled_flash_messages = true;
+            // this.handled_flash_messages = true;
         },
     },
 });

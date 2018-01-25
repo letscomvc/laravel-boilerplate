@@ -1,13 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container">
         <data-list data-source="{{ route('pagination.users') }}"
                    delete-message="Tem certeza que deseja apagar este registro ?"
-                   url-create="we"
+                   url-create="{{ route('users.create') }}"
                    label-create="Novo usuário"
                    />
-    </div>
 @endsection
 
 @section('custom-template')

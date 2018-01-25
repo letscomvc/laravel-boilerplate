@@ -3,6 +3,7 @@
  * All files in this folder will be included in the application.
  */
 
+
 /**
  * Separar os ítens de uma array por vírgula.
  *
@@ -91,4 +92,14 @@ function find_message($key, $default = null)
     }
 
     return $translated;
+}
+
+function has_error_class($field)
+{
+    $errors = \Request::get('errors');
+    if (empty($errors)) {
+        return '';
+    }
+
+    return $errors->has('name') ? ' has-error' : '';
 }

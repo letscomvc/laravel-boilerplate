@@ -22,7 +22,8 @@ class ChooseReturn
         }
 
         if ($route) {
-            return redirect()->route($route)->with($type, $message);
+            \Flash::create($type, $message);
+            return redirect()->route($route);
         }
     }
 }

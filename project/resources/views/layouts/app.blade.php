@@ -76,8 +76,10 @@
         </nav>
         <vue-snotify></vue-snotify>
 
-        @yield('custom-template')
-        @yield('content')
+        <div class="container">
+            @yield('custom-template')
+            @yield('content')
+        </div>
     </div>
 
     <!-- Scripts -->
