@@ -3,7 +3,6 @@
 namespace App\Helpers;
 
 use Request;
-use Psy\Util\Json;
 
 class ChooseReturn
 {
@@ -19,7 +18,7 @@ class ChooseReturn
 
             $code = ($type === 'error') ? 202 : 200;
 
-            return response(Json::encode($response), $code);
+            return response(json_encode($response), $code);
         }
 
         if ($route) {
