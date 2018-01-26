@@ -1,24 +1,31 @@
 @extends('layouts.app')
 
 @section('content')
-        <data-list data-source="{{ route('pagination.users') }}"
-                   delete-message="Tem certeza que deseja apagar este registro ?"
-                   url-create="{{ route('users.create') }}"
-                   label-create="Novo usuário"
-                   />
+    <div class="container">
+        <div class="row mt-3">
+            <div class="col-md-12">
+                <data-list data-source="{{ route('pagination.users') }}"
+                           delete-message="Tem certeza que deseja apagar este registro ?"
+                           url-create="{{ route('users.create') }}"
+                           label-create="Novo usuário"
+                           />
+           </div>
+       </div>
+   </div>
 @endsection
 
 @section('custom-template')
     <template id="data-list" slot-scope="modelScope">
         <div>
-            <div class="row">
+            <div class="row my-2">
                 <div class="col-md-6">
                     <a v-if="urlCreate" :href="urlCreate">
                         <button class="btn btn-primary">@{{labelCreate}}</button>
                     </a>
                 </div>
                 <div class="col-md-6">
-                    <input type="text" v-model="query" class="form-control">
+                    <input type="text" v-model="query" class="form-control"
+                        placeholder="Buscar ..." >
                 </div>
             </div>
             <table class="table">

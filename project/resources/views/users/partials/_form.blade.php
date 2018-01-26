@@ -1,35 +1,24 @@
 @csrf
-<div class="form-group{{ has_error_class('name') }}">
-    <label for="name" class="col-md-4 control-label">Name</label>
 
-    <div class="col-md-6">
-        <input id="name" type="text" class="form-control" name="name" value="{{ old('name') ?? @$user->name ?? '' }}" required autofocus>
-        @errorblock('name')
-    </div>
+<div class="form-group {{ has_error_class('name') }}">
+  <label for="userName">Nome</label>
+  <input type="name" name="name" class="form-control" id="userName" placeholder="Nome do usuário" value="{{old('name') ?? $user->name ?? ''}}">
+  @errorblock('name')
 </div>
 
-<div class="form-group{{ has_error_class('email') }}">
-    <label for="email" class="col-md-4 control-label">E-Mail Address</label>
-
-    <div class="col-md-6">
-        <input id="email" type="text" class="form-control" name="email" value="{{ old('email') ?? @$user->email ?? '' }}" required>
-        @errorblock('email')
-    </div>
-</div>
-
-<div class="form-group{{ has_error_class('password') }}">
-    <label for="password" class="col-md-4 control-label">Password</label>
-
-    <div class="col-md-6">
-        <input id="password" type="password" class="form-control" name="password" required>
-        @errorblock('password')
-    </div>
+<div class="form-group {{ has_error_class('email') }}">
+  <label for="userEmail">Email</label>
+  <input type="email" name="email" class="form-control" id="userEmail" placeholder="Digite o email" value="{{old('email') ?? $user->email ?? ''}}">
+  @errorblock('email')
 </div>
 
 <div class="form-group">
-    <label for="password-confirm" class="col-md-4 control-label">Confirm Password</label>
+  <label for="userPassword">Senha</label>
+  <input type="password" name="password" class="form-control" id="userPassword" placeholder="Senha">
+  @errorblock('password')
+</div>
 
-    <div class="col-md-6">
-        <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required>
-    </div>
+<div class="form-group">
+  <label for="confirmPassword">Confirmar senha</label>
+  <input type="password" name="password_confirmation" class="form-control" id="confirmPassword" placeholder="Confirmar senha">
 </div>
