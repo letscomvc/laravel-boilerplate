@@ -8,11 +8,11 @@
 
             'error' => [
                 'destroy' => 'Erro ao apagar este registro.',
-                'edit' => 'Erro ao editar este registro.',
+                'update' => 'Erro ao editar este registro.',
             ],
 
             'success' => [
-                'edit' => 'Registro editado com sucesso.',
+                'update' => 'Registro editado com sucesso.',
                 'create' => 'Cadastro realizado com sucesso.',
                 'destroy' => 'Registro apagado com sucesso.',
             ],

@@ -11,7 +11,6 @@ use App\Http\Resources\User as UserResource;
 
 class UserController extends Controller
 {
-
     public function index()
     {
         return view('users.index');
@@ -21,10 +20,11 @@ class UserController extends Controller
     {
         return view('users.create');
     }
-    public function store(Request $request, UserRepository $userRepository)
+
+    public function store(UserRequest $request, UserRepository $userRepository)
     {
         $data = $request->all();
-        $user = $userRepository->create($data);
+        $userRepository->create($data);
 
         $message = find_message('user.success.create');
         return $this->chooseReturn('success', $message, 'users.index');
@@ -36,15 +36,26 @@ class UserController extends Controller
         return view('users.edit', compact('user'));
     }
 
-    public function update(Request $request, $id)
+    public function update(UserRequest $request, UserRepository $userRepository, $id)
     {
+        $data = $request->all();
+        $userRepository->update($id, $data);
+
         $message = find_message('user.success.update');
         return $this->chooseReturn('success', $message, 'users.index');
+    }
+
+    public function show(UserRepository $userRepository, $id)
+    {
+        $user = $userRepository->find($id);
+
+        return view('users.show', compact('user'));
     }
 
     public function destroy($id)
     {
         $deleted_user = (new UserRepository())->delete($id);
+
         if ($deleted_user) {
             $message = find_message('user.success.destroy');
             return $this->chooseReturn('success', $message, 'users.index');

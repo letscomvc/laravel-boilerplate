@@ -32,7 +32,7 @@
 
                     <!-- Branding Image -->
                     <a class="navbar-brand" href="{{ url('/') }}">
-                        {{ config('app.name', 'ProjetoBase') }}
+                        {{ config('app.name', 'Projeto Base') }}
                     </a>
                 </div>
 
@@ -64,7 +64,7 @@
                                         </a>
 
                                         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                            {{ csrf_field() }}
+                                            @csrf
                                         </form>
                                     </li>
                                 </ul>
