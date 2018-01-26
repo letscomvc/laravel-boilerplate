@@ -70,9 +70,12 @@ abstract class Repository implements CriteriaContract
     public function delete($id)
     {
         $model = $this->model->find($id);
-        $model->delete();
+        if ($model) {
+            $model->delete();
+            return $model;
+        }
 
-        return $model;
+        throw new RepositoryException("Model not found.", 500);
     }
 
     public function update($id, $data)

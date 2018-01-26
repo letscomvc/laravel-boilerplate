@@ -9,21 +9,21 @@ export default {
 
         urlCreate: {
             type: String,
-            default() {
+            default () {
                 return null;
             },
         },
 
         labelCreate: {
             type: String,
-            default() {
+            default () {
                 return 'Cadastrar novo';
             },
         },
 
         deleteMessage: {
             type: String,
-            default() {
+            default () {
                 return 'Tem certeza que deseja apagar este registro ?';
             },
         },
@@ -31,6 +31,7 @@ export default {
 
     watch: {
         query: _.debounce(function(text) {
+            this.currentPage = 1;
             this.fetchData();
         }, 300),
     },
@@ -74,6 +75,7 @@ export default {
             totalPages: 1,
             currentPage: 1,
             itemsPerPage: 15,
+            paginationButtons: [],
         }
     },
 
@@ -96,7 +98,7 @@ export default {
             return arrow;
         },
 
-        defineOrder() {
+        toggleOrder() {
             this.order = (this.order == 'asc') ? 'desc' : 'asc';
             return this.order;
         },
@@ -112,7 +114,7 @@ export default {
 
         orderBy(field, event) {
             this.field = field;
-            this.defineOrder();
+            this.toggleOrder();
             this.setOrderArrowIn(event.target);
             this.fetchData();
         },
@@ -127,6 +129,7 @@ export default {
             axios.get(this.fetch_url).then((response) => {
                 this.items = response.data.data;
                 this.setPagination(response.data.meta);
+                this.definePaginationButtons();
             })
         },
 
@@ -144,34 +147,67 @@ export default {
             }
         },
 
+        definePaginationButtons() {
+            const totalPages = this.totalPages;
+            let startPage = this.currentPage - 4;
+            let endPage = this.currentPage + 4;
+            let buttons = [];
+
+            if (startPage <= 0) {
+                endPage -= (startPage - 1);
+                startPage = 1;
+            }
+
+            if (endPage > totalPages)
+                endPage = totalPages;
+
+            if (startPage > 1) {
+                buttons.push({disabled: false, page: 1, text: '1'});
+                buttons.push({disabled: true, page: 0, text: '...'});
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                const active = (i == this.currentPage);
+                buttons.push({disabled: false, page: i, text: i, active: active});
+            }
+
+            if (endPage < totalPages){
+                buttons.push({disabled: true, page: 0, text: '...'});
+                buttons.push({disabled: false, page: totalPages, text: totalPages});
+            }
+
+            this.paginationButtons = buttons;
+        },
+
+        changePage(page) {
+            this.currentPage = page;
+            this.fetchData();
+        },
+
         handleDelete(link) {
-             axios.delete(link).then((response) => {
+            axios.delete(link).then((response) => {
                 const status = response.data;
                 this.$snotify[status.type](status.message);
                 this.fetchData();
-             });
+            });
         },
 
-        confirmDelete(link, message = undefined) {
 
-            if (message == undefined){
+        confirmDelete(link, message = undefined) {
+            if (message == undefined) {
                 message = this.deleteMessage;
             }
 
             this.$snotify.confirm(message, 'Excluir registro', {
-              timeout: 5000,
-              showProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: false,
-              buttons: [
-                {text: 'Sim', action: () => this.handleDelete(link) , bold: false},
-                {text: 'Não'},
-              ]
+                timeout: 5000,
+                showProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                buttons: [
+                    { text: 'Sim', action: () => this.handleDelete(link), bold: false },
+                    { text: 'Não' },
+                ]
             });
-        },
-
-        changePage(p) {
-            console.log(p)
         },
     },
 }

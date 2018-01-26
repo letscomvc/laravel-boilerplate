@@ -30,11 +30,17 @@ class PaginationBuilder
     /**
      * Configura a classe para paginar um repositório
      *
+     * Pode receber uma instância de repositório ou sua respectiva classe.
+     *
      * @param App\Base\Repository $repository
      * @return App\Builders\PaginationBuilder
      */
-    public function repository(Repository $repository)
+    public function repository($repository)
     {
+        if (!($repository instanceof Repository)) {
+            $repository = new $repository();
+        }
+
         $this->collection = null;
         $this->repository = $repository;
         $this->originalRepository = clone $repository;
@@ -48,11 +54,12 @@ class PaginationBuilder
      * @param Illuminate\Support\Collection $collection
      * @return App\Builders\PaginationBuilder
      */
-    public function fromCollection(Collection $collection)
+    public function collection(Collection $collection)
     {
-        $this->collection = $collection;
         $this->repository = null;
+        $this->collection = $collection;
         $this->originalRepository = null;
+
         return $this;
     }
 
@@ -165,24 +172,10 @@ class PaginationBuilder
             $this->collection = collect();
         }
 
-        return $this->getPaginationFromCollection($this->collection);
-    }
-
-    private function getPaginationFromCollection($collection, $total = null)
-    {
-        if (!$collection instanceof Collection) {
-            $collection = collect($collection);
+        if (!$this->collection instanceof Collection) {
+            $this->collection = collect($this->collection);
         }
 
-        $perPage = $this->perPage;
-        $currentPage = LengthAwarePaginator::resolveCurrentPage();
-        $currentPageItems = $collection;
-
-        if ($total == null) {
-            $total = $collection->count();
-            $currentPageItems = $collection->slice(($currentPage - 1) * $perPage, $perPage);
-        }
-
-        return new LengthAwarePaginator($currentPageItems, $total, $perPage);
+        return $this->collection->paginate($this->perPage);
     }
 }

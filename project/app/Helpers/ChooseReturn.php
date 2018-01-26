@@ -25,5 +25,7 @@ class ChooseReturn
             \Flash::create($type, $message);
             return redirect()->route($route);
         }
+
+        throw new \BadMethodCallException('Redirect without route.', 500);
     }
 }

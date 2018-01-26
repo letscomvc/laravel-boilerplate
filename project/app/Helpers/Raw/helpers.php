@@ -94,6 +94,30 @@ function find_message($key, $default = null)
     return $translated;
 }
 
+/**
+ * Alias para 'find_message'. Retorna mensagens do arquivo 'messages' de tradução.
+ *
+ *  A chave será buscada em messages.CHAVE_INSERIDA. Caso não seja
+ * encontrado nada, tentará retornar a mensagem padrão. Caso não encontre
+ * também, será retornada a chave completa.
+ *
+ * @param mixed $key Chave do caminho para acessar. Pode ser uma string ou
+ * uma array com as seguintes chaves: 'domain' e 'message_path'.
+ * @param string $default Mensagem padrão caso não encontre a chave.
+ * @return string
+ */
+function _m($key, $default = null)
+{
+    return find_message($key, $default);
+}
+
+/**
+ *  Caso exista algum erro para o campo passado como parâmetro, é retornada
+ * a classe 'has-error'.
+ *
+ * @param string $field Nome do campo do formulário
+ * @return string
+ */
 function has_error_class($field)
 {
     $errors = \Request::get('errors');

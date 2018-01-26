@@ -26,11 +26,11 @@ class UserController extends Controller
         $data = $request->all();
         $userRepository->create($data);
 
-        $message = find_message('user.success.create');
+        $message = _m('user.success.create');
         return $this->chooseReturn('success', $message, 'users.index');
     }
 
-    public function edit($id, UserRepository $userRepository)
+    public function edit(UserRepository $userRepository, $id)
     {
         $user = $userRepository->find($id);
         return view('users.edit', compact('user'));
@@ -41,7 +41,7 @@ class UserController extends Controller
         $data = $request->all();
         $userRepository->update($id, $data);
 
-        $message = find_message('user.success.update');
+        $message = _m('user.success.update');
         return $this->chooseReturn('success', $message, 'users.index');
     }
 
@@ -52,23 +52,19 @@ class UserController extends Controller
         return view('users.show', compact('user'));
     }
 
-    public function destroy($id)
+    public function destroy(UserRepository $userRepository, $id)
     {
-        $deleted_user = (new UserRepository())->delete($id);
-
-        if ($deleted_user) {
-            $message = find_message('user.success.destroy');
-            return $this->chooseReturn('success', $message, 'users.index');
+        try {
+            $userRepository->delete($id);
+            return $this->chooseReturn('success', _m('user.success.destroy'));
+        } catch (\Exception $e) {
+            return $this->chooseReturn('error', _m('user.error.destroy'));
         }
-
-        $message = find_message('user.error.destroy');
-        return $this->chooseReturn('error', $message, 'users.index');
     }
 
-    protected function getPagination()
+    protected function getPagination($pagination)
     {
-        $this->pagination->repository(new UserRepository())
-                         ->resource(UserResource::class)
-                         ->perPage(30);
+        $pagination->repository(UserRepository::class)
+                   ->resource(UserResource::class);
     }
 }

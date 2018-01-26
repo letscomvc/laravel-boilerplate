@@ -14,23 +14,41 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    protected $pagination;
-
-    public function __construct()
-    {
-        $this->pagination = new PaginationBuilder();
-    }
-
+    /**
+     * Retorna a paginação completa.
+     *
+     *  Cria o construtor de paginação, delega a configuração para o hook 'getPagination'
+     * e retorna a paginação construída.
+     *
+     * @return Pagination
+     */
     public function pagination()
     {
-        $this->getPagination();
-        return $this->pagination->build();
+        $pagination = new PaginationBuilder();
+        $this->getPagination($pagination);
+        return $pagination->build();
     }
 
-    protected function getPagination()
+    /**
+     * Configura a paginação.
+     *
+     * @param mixed $key Chave do caminho para acessar. Pode ser uma string ou
+     * uma array com as seguintes chaves: 'domain' e 'message_path'.
+     * @param PaginationBuilder $pagination
+     * @return void
+     */
+    protected function getPagination($pagination)
     {
     }
 
+    /**
+     * Escolhe a forma correta de retorno (XHR ou Redirect).
+     *
+     * @param string $type Tipo do retorno ('error', 'success', 'info', 'warning')
+     * @param string $message Mensagem de retorno.
+     * @param string $route_to_redirect Rota para redirecionamento caso não seja XHR.
+     * @return mixed JSON ou Redirect;
+     */
     public function chooseReturn($type, $message, $route_to_redirect = null)
     {
         return ChooseReturn::choose($type, $message, $route_to_redirect);
