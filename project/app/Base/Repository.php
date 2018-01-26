@@ -75,7 +75,7 @@ abstract class Repository implements CriteriaContract
             return $model;
         }
 
-        throw new RepositoryException("Model not found.", 500);
+        throw new RepositoryException("Model not found.", 404);
     }
 
     public function update($id, $data)
