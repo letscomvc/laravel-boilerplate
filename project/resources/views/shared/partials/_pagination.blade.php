@@ -6,7 +6,7 @@
                     class="col-xs-12 col-md-6 btn btn-light"
                     :disabled="!enabledPrevPageButton"
                     @click="fetchPrevPage" >
-                    Anterior
+                        @lang('pagination.previous')
                 </label>
             </div>
 
@@ -14,8 +14,7 @@
                 <label class="btn btn-light"
                     v-for="button in paginationButtons"
                     :ref="'paginationButton' + button.page"
-                    :class="{'active': button.active}"
-                    :disabled="button.disabled"
+                    :class="{'active': button.active, 'disabled': button.disabled}"
                     @click="changePage(button.page)" >
                         @{{button.text}}
                 </label>
@@ -26,7 +25,7 @@
                     class="col-xs-12 col-md-6 btn btn-light"
                     :disabled="!enabledNextPageButton"
                     @click="fetchNextPage" >
-                    Próxima
+                        @lang('pagination.next')
                 </label>
             </div>
         </div>
