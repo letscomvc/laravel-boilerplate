@@ -5,3 +5,8 @@
 #flash-messages-container {
     display: none;
 }
+
+.error-block > span {
+    color: red;
+    font-weight: lighter;
+}

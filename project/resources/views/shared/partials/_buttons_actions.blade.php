@@ -1,6 +1,6 @@
 <div v-if="item.links">
     <a v-if="item.links.show" :href="item.links.show">
-        <button type="button" class="btn btn-info">
+        <button type="button" class="btn btn-light">
             @lang('buttons.common.show')
         </button>
     </a>

@@ -32,8 +32,6 @@ class Controller extends BaseController
     /**
      * Configura a paginação.
      *
-     * @param mixed $key Chave do caminho para acessar. Pode ser uma string ou
-     * uma array com as seguintes chaves: 'domain' e 'message_path'.
      * @param PaginationBuilder $pagination
      * @return void
      */

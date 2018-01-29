@@ -2,13 +2,16 @@
     <div class="custom-pagination" v-if="shouldShowPagination">
         <div class="row center">
             <div class="col-xs-12 col-sm-3 col-md-3">
-                <button class="col-xs-12 col-md-6 btn btn-default pull-right" @click="fetchPrevPage" :disabled="!enabledPrevPageButton">
+                <label
+                    class="col-xs-12 col-md-6 btn btn-light"
+                    :disabled="!enabledPrevPageButton"
+                    @click="fetchPrevPage" >
                     Anterior
-                </button>
+                </label>
             </div>
 
             <div class="col-xs-12 col-sm-5 col-md-6">
-                <label class="btn btn-default"
+                <label class="btn btn-light"
                     v-for="button in paginationButtons"
                     :ref="'paginationButton' + button.page"
                     :class="{'active': button.active}"
@@ -19,9 +22,12 @@
             </div>
 
             <div class="col-xs-12 col-sm-3 col-md-3">
-                <button class="col-xs-12 col-md-6 btn btn-default pull-left" @click="fetchNextPage" :disabled="!enabledNextPageButton">
+                <label
+                    class="col-xs-12 col-md-6 btn btn-light"
+                    :disabled="!enabledNextPageButton"
+                    @click="fetchNextPage" >
                     Próxima
-                </button>
+                </label>
             </div>
         </div>
     </div>
