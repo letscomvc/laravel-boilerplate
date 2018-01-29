@@ -16,19 +16,23 @@ class BladeDirectivesServiceProvider extends ServiceProvider
         \Blade::directive('errorblock', function ($expression) {
             $expression = trim($expression, "\"'");
             $directive = "<?php ";
-            $directive .= "\$field = '{$expression}';";
-            $directive .= "echo \$__env->make('shared.partials._error_block' , array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>";
+            $directive .= " \$field = '{$expression}';";
+            $directive .= " \$variables = array_except(get_defined_vars(), ['__data', '__path']);";
+            $directive .= " \$rendered = \$__env->make('shared.partials._error_block', \$variables)->render();";
+            $directive .= " echo \$rendered; ?>";
             return $directive;
         });
 
         \Blade::directive('csrf', function () {
-            return "<?php echo csrf_field() ?>";
+            return csrf_field();
         });
 
         \Blade::directive('method', function ($field) {
             $field = strtoupper(trim($field, "\"'"));
-            if (in_array($field, ['PUT', 'PATCH', 'DELETE'])) {
-                return "<?php echo method_field('{$field}') ?>";
+            $allowed_methods = ['PUT', 'PATCH', 'DELETE'];
+
+            if (in_array($field, $allowed_methods)) {
+                return method_field($field);
             }
 
             $exception_message = "Invalid form method [{$field}].";
