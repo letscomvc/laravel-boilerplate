@@ -24,7 +24,7 @@ class BladeDirectivesServiceProvider extends ServiceProvider
         });
 
         \Blade::directive('csrf', function () {
-            return csrf_field();
+            return "<?php echo csrf_field(); ?>";
         });
 
         \Blade::directive('method', function ($field) {
