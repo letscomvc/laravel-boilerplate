@@ -2,6 +2,7 @@
 namespace App\Base;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 use App\Base\Criteria;
 use App\Contracts\Repositories\CriteriaContract;
@@ -45,7 +46,7 @@ abstract class Repository implements CriteriaContract
     public function all($columns = ['*'])
     {
         $this->applyCriteria();
-        return $this->model->all();
+        return $this->model->select($columns)->get();
     }
 
     public function find($id, $columns = ['*'])
@@ -153,12 +154,19 @@ abstract class Repository implements CriteriaContract
     }
 
     /**
-     * @param Criteria $criteria
+     * @param mixed $criterias
      * @return $this
      */
-    public function pushCriteria(Criteria $criteria)
+    public function pushCriteria($criterias)
     {
-        $this->criteria->push($criteria);
+        if (is_array($criterias) || $criterias instanceof Collection) {
+            foreach ($criterias as $criteria) {
+                $this->pushCriteria($criteria);
+            }
+        } else {
+            $this->criteria->push($criterias);
+        }
+
         return $this;
     }
 
@@ -174,6 +182,10 @@ abstract class Repository implements CriteriaContract
         foreach ($this->getCriteria() as $criteria) {
             if ($criteria instanceof Criteria) {
                 $this->model = $criteria->apply($this->model, $this);
+            } else {
+                $class = get_class($criteria);
+                $message = "Class {$class} must be an instance of App\\Base\\Criteria";
+                throw new RepositoryException($message);
             }
         }
 

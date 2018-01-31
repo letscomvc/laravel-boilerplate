@@ -159,9 +159,7 @@ class PaginationBuilder
 
     private function buildForRepository()
     {
-        foreach ($this->criterias as $criteria) {
-            $this->repository->pushCriteria($criteria);
-        }
+        $this->repository->pushCriteria($this->criterias);
 
         return $this->repository->paginate($this->perPage);
     }

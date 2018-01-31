@@ -27,10 +27,10 @@ interface CriteriaContract
     public function getByCriteria(Criteria $criteria);
 
     /**
-     * @param Criteria $criteria
+     * @param mixed $criteria
      * @return $this
      */
-    public function pushCriteria(Criteria $criteria);
+    public function pushCriteria($criteria);
 
     /**
      * @return $this
