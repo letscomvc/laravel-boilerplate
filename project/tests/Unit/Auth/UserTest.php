@@ -11,12 +11,12 @@ class UserTest extends TestCase
 {
     use RefreshDatabase;
 
+    private $user;
+
     public function setUp()
     {
         parent::setUp();
-        \Artisan::call('migrate');
-        // \Route::enableFilters();
-        \Session::start();
+        $this->user = factory(User::class)->create();
     }
 
     /** @test */
@@ -62,19 +62,10 @@ class UserTest extends TestCase
     /** @test */
     public function shouldAuthenticateWhenUserExistsAndCorrectCredentials()
     {
-        $user = [
-            'name' => 'User',
-            'email' => 'test@exists.com',
-            'password' => \Hash::make('test'),
-        ];
-
-        User::create($user);
-
         $credentials = [
-            'email' => $user['email'],
-            'password' => 'test',
+            'email' => $this->user['email'],
+            'password' => 'secret',
         ];
-
 
         $this->assertCredentials($credentials);
 
@@ -85,5 +76,25 @@ class UserTest extends TestCase
            ]);
 
         $this->assertAuthenticated();
+    }
+
+    /** @test */
+    public function shouldRedirectToLoginAfterLogout()
+    {
+        $credentials = [
+            'email' => $this->user['email'],
+            'password' => 'secret',
+        ];
+
+        $response = $this->call('POST', '/login', [
+            'email' => $credentials['email'],
+            'password' => $credentials['password'],
+            '_token' => csrf_token()
+        ]);
+
+        $this->call('POST', route('logout'), ['_token' => csrf_token()])
+             ->assertRedirect('/');
+
+        $this->assertGuest();
     }
 }
