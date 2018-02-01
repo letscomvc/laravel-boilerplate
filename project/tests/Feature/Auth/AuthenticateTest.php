@@ -1,9 +1,8 @@
 <?php
 
-namespace Tests\Unit\Auth;
+namespace Tests\Feature\Auth;
 
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use Tests\TestCase;
 
@@ -11,8 +10,6 @@ use App\Models\User;
 
 class UserTest extends TestCase
 {
-    use RefreshDatabase;
-
     private $user;
 
     public function setUp()

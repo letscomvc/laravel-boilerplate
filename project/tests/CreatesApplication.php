@@ -4,9 +4,11 @@ namespace Tests;
 
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Contracts\Console\Kernel;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 trait CreatesApplication
 {
+    use RefreshDatabase;
     /**
      * Creates the application.
      *
