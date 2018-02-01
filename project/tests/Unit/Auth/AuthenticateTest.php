@@ -2,9 +2,11 @@
 
 namespace Tests\Unit\Auth;
 
-use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+
+use Tests\TestCase;
+
 use App\Models\User;
 
 class UserTest extends TestCase
