@@ -1,8 +1,8 @@
 <?php
 namespace App\Base;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Model;
 
 use App\Base\Criteria;
 use App\Contracts\Repositories\CriteriaContract;
@@ -38,25 +38,40 @@ abstract class Repository implements CriteriaContract
     {
         $this->criteria = collect();
         $this->resetScope();
-        $this->model = $this->makeModel();
+        $this->resetQuery();
     }
 
     abstract protected function getClass();
 
+    private function resetQuery()
+    {
+        $this->model = $this->makeModel();
+    }
+
     public function all($columns = ['*'])
     {
+        $this->resetQuery();
         $this->applyCriteria();
         return $this->model->select($columns)->get();
     }
 
+    public function pluck($key, $value = null)
+    {
+        $this->resetQuery();
+        $this->applyCriteria();
+        return $this->model->pluck($key, $value);
+    }
+
     public function find($id, $columns = ['*'])
     {
+        $this->resetQuery();
         $this->applyCriteria();
         return $this->model->find($id);
     }
 
     public function findBy($field, $value, $columns = ['*'])
     {
+        $this->resetQuery();
         $this->applyCriteria();
         $query = $this->model->where($field, '=', $value)
                              ->addSelect($columns);
@@ -68,19 +83,37 @@ abstract class Repository implements CriteriaContract
         return $this->model->create($data);
     }
 
-    public function delete($id)
+    public function activate($id)
     {
+        $this->resetQuery();
         $model = $this->model->find($id);
         if ($model) {
-            $model->delete();
-            return $model;
+            $model->is_active = true;
+            return $model->save();
         }
 
         throw new RepositoryException("Model not found.", 404);
     }
 
+    public function deactivate($id)
+    {
+        $this->resetQuery();
+        $model = $this->model->findOrFail($id);
+        $model->is_active = false;
+        return $model->save();
+    }
+
+    public function delete($id)
+    {
+        $this->resetQuery();
+        $model = $this->model->findOrFail($id);
+        $model->delete();
+        return $model;
+    }
+
     public function update($id, $data)
     {
+        $this->resetQuery();
         $model = $this->model->find($id);
         $model->update($data);
 
@@ -89,12 +122,14 @@ abstract class Repository implements CriteriaContract
 
     public function paginate($perPage = 15, $columns = ['*'])
     {
+        $this->resetQuery();
         $this->applyCriteria();
         return $this->model->paginate($perPage, $columns);
     }
 
     public function count()
     {
+        $this->resetQuery();
         $this->applyCriteria();
         return $this->model->count();
     }

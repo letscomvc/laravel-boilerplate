@@ -28,6 +28,7 @@ mix.extract([
     'popper.js',
     'bootstrap',
     'vue-snotify',
+    'jquery-mask-plugin',
 ]);
 
 // Versioning assets when production

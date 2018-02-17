@@ -17,7 +17,6 @@ class PaginationBuilder
     private $criterias;
     private $collection;
     private $repository;
-    private $originalRepository;
 
     public function __construct()
     {
@@ -91,9 +90,9 @@ class PaginationBuilder
     public function criterias($criterias)
     {
         if ($criterias instanceof Collection) {
-            $this->criterias->merge($criterias);
+            $this->criterias = $this->criterias->merge($criterias);
         } else {
-            $this->criterias->merge(collect($criterias));
+            $this->criterias->push($criterias);
         }
 
         return $this;
