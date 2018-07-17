@@ -11,7 +11,10 @@ class Upgrade extends Command
      *
      * @var string
      */
-    protected $signature = 'upgrade {--no-cache : Não realiza caches da aplicação}';
+    protected $signature = 'upgrade
+                                {--no-cache : Não realiza caches da aplicação}
+                                {--dev : Alias para --no-cache}
+                                {--yes : Auto confirmar execução do comando}';
 
     /**
      * The console command description.
@@ -36,8 +39,8 @@ class Upgrade extends Command
         $this->line('Este comando fará as seguintes ações:');
         $this->line(' - Realizar migrações;');
         $this->line(' - Executar Seeder de atualização;');
-        $this->line(' - Criar cache das rotas (utilizar --no-cache para ignorar esta etapa);');
-        $this->line(' - Criar cache das configurações (utilizar --no-cache para ignorar esta etapa);');
+        $this->line(' - Criar cache das rotas (utilizar --dev para ignorar esta etapa);');
+        $this->line(' - Criar cache das configurações (utilizar --dev para ignorar esta etapa);');
     }
 
     /**
@@ -48,6 +51,12 @@ class Upgrade extends Command
     public function handle()
     {
         $this->showCommandHeader();
+
+        if ($this->option('yes') || $this->option('dev')) {
+            $this->executeCommands();
+            $this->info('Pronto!');
+            return;
+        }
 
         $agree = $this->confirm('Tem certeza que deseja atualizar a aplicação ?');
 
@@ -61,14 +70,14 @@ class Upgrade extends Command
 
     private function executeCommands()
     {
-        $this->executeMigrate();
-        $this->executeUpgradeSeeder();
-
-        if ($this->option('no-cache')) {
+        if ($this->option('no-cache') || $this->option('dev')) {
             $this->executeNoCache();
         } else {
             $this->executeCache();
         }
+
+        $this->executeMigrate();
+        $this->executeUpgradeSeeder();
 
         $this->executeOptimization();
     }
@@ -117,6 +126,7 @@ class Upgrade extends Command
 
     private function executeNoCache()
     {
+        $this->executeClearCache();
         $this->executeClearViews();
         $this->executeClearRoutes();
         $this->executeClearConfigurations();
@@ -138,6 +148,12 @@ class Upgrade extends Command
     {
         $clearCacheViewMessages = ['success' => 'Cache das views foi apagado.'];
         $this->executeWithMessages('view:clear', [], $clearCacheViewMessages);
+    }
+
+    private function executeClearCache()
+    {
+        $clearCacheMessages = ['success' => 'Cache da aplicação foi apagado.'];
+        $this->executeWithMessages('cache:clear', [], $clearCacheMessages);
     }
 
     private function executeOptimization()
