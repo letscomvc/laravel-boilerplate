@@ -1,4 +1,6 @@
 <script>
+import SortIcon from '../commons/SortIcon.js';
+
 export default {
     template: '#data-list',
 
@@ -24,7 +26,28 @@ export default {
         deleteMessage: {
             type: String,
             default () {
-                return 'Tem certeza que deseja apagar este registro ?';
+                return 'Tem certeza que deseja apagar este registro?';
+            },
+        },
+
+        resendMessage: {
+            type: String,
+            default () {
+                return 'Tem certeza que deseja reenviar este e-mail?'
+            },
+        },
+
+        undeleteMessage: {
+            type: String,
+            default () {
+                return 'Tem certeza que deseja restaurar este usuário?'
+            },
+        },
+
+        deleteTitle: {
+            type: String,
+            default () {
+                return 'Excluir registro';
             },
         },
     },
@@ -37,18 +60,34 @@ export default {
     },
 
     computed: {
+        queryFilters() {
+            let query_filters = '';
+            for (var filterName in this.filters) {
+                if (this.filters.hasOwnProperty(filterName)) {
+                    query_filters += '&' + filterName + '=' + this.filters[filterName];
+                }
+            }
+            return query_filters;
+        },
+
         fetch_url() {
             let query_params = '';
             query_params = '?query=' + this.query;
             query_params += '&field=' + this.field;
-            query_params += '&order=' + this.order;
+            query_params += '&order=' + this.sortIcon.order;
 
             if (this.currentPage != 1) {
                 query_params += '&page=' + this.currentPage;
             }
 
+            query_params += this.queryFilters;
+
             const url = this.dataSource + query_params;
-            return url;
+            return encodeURI(url);
+        },
+
+        noResults() {
+            return this.items.length == 0;
         },
 
         enabledNextPageButton() {
@@ -61,61 +100,49 @@ export default {
 
         shouldShowPagination() {
             return this.totalPages > 1;
-        }
+        },
+
+        isNotLoading() {
+            return !this.loading;
+        },
     },
 
     data: function() {
         return {
             items: [],
 
+            loading: true,
+
             query: '',
             field: '',
-            order: 'asc',
 
+            sortIcon: new SortIcon,
             totalPages: 1,
             currentPage: 1,
             itemsPerPage: 15,
             paginationButtons: [],
+            departmentId: null,
+
+            count: {
+                actives: 0,
+                inactives: 0,
+            },
+
+            filters: {},
         }
     },
 
     mounted() {
+        this.sortIcon.setArrow();
+        this.listenFilters();
+        this.listenLoadingEvents();
         this.fetchData();
     },
 
     methods: {
-        getArrow() {
-            let arrow_classes = '';
-            if (this.order == 'asc') {
-                arrow_classes = 'fa fa-angle-up order-arrow'
-            } else {
-                arrow_classes = 'fa fa-angle-down order-arrow'
-            }
-
-            const arrow = document.createElement('i');
-            arrow.className = arrow_classes;
-
-            return arrow;
-        },
-
-        toggleOrder() {
-            this.order = (this.order == 'asc') ? 'desc' : 'asc';
-            return this.order;
-        },
-
-        setOrderArrowIn(element) {
-            let arrows = document.querySelectorAll('.order-arrow');
-            arrows.forEach((node) => {
-                node.parentNode.removeChild(node);
-            });
-
-            element.appendChild(this.getArrow());
-        },
-
         orderBy(field, event) {
             this.field = field;
-            this.toggleOrder();
-            this.setOrderArrowIn(event.target);
+            this.sortIcon.change(event);
             this.fetchData();
         },
 
@@ -126,11 +153,16 @@ export default {
         },
 
         fetchData() {
+            this.$emit('start-loading');
             axios.get(this.fetch_url).then((response) => {
                 this.items = response.data.data;
                 this.setPagination(response.data.meta);
                 this.definePaginationButtons();
-            })
+                this.$emit('stop-loading');
+                this.$nextTick().then(function() {
+                    $('[data-toggle="popover"]').popover();
+                });
+            });
         },
 
         fetchPrevPage() {
@@ -162,18 +194,39 @@ export default {
                 endPage = totalPages;
 
             if (startPage > 1) {
-                buttons.push({disabled: false, page: 1, text: '1'});
-                buttons.push({disabled: true, page: 0, text: '...'});
+                buttons.push({
+                    disabled: false,
+                    page: 1,
+                    text: '1'
+                });
+                buttons.push({
+                    disabled: true,
+                    page: 0,
+                    text: '...'
+                });
             }
 
             for (let i = startPage; i <= endPage; i++) {
                 const active = (i == this.currentPage);
-                buttons.push({disabled: false, page: i, text: i, active: active});
+                buttons.push({
+                    disabled: false,
+                    page: i,
+                    text: i,
+                    active: active
+                });
             }
 
-            if (endPage < totalPages){
-                buttons.push({disabled: true, page: 0, text: '...'});
-                buttons.push({disabled: false, page: totalPages, text: totalPages});
+            if (endPage < totalPages) {
+                buttons.push({
+                    disabled: true,
+                    page: 0,
+                    text: '...'
+                });
+                buttons.push({
+                    disabled: false,
+                    page: totalPages,
+                    text: totalPages
+                });
             }
 
             this.paginationButtons = buttons;
@@ -187,28 +240,92 @@ export default {
         handleDelete(link) {
             axios.delete(link).then((response) => {
                 const status = response.data;
-                this.$snotify[status.type](status.message);
-                this.fetchData();
+                if (status.type) {
+                    this.$snotify[status.type](status.message);
+                    this.fetchData();
+                } else {
+                    this.$snotify.error('Action undefined');
+                }
             });
         },
 
+        activate(link) {
+            axios.post(link).then((response) => {
+                const status = response.data;
+                if (status.type) {
+                    this.$snotify[status.type](status.message);
+                    $('.tooltip').remove();
+                    this.fetchData();
+                } else {
+                    this.$snotify.error('Action undefined');
+                }
+            });
+        },
+
+        deactivate(link) {
+            axios.post(link).then((response) => {
+                const status = response.data;
+                if (status.type) {
+                    this.$snotify[status.type](status.message);
+                    $('.tooltip').remove();
+                    this.fetchData();
+                } else {
+                    this.$snotify.error('Action undefined');
+                }
+            });
+        },
 
         confirmDelete(link, message = undefined) {
             if (message == undefined) {
                 message = this.deleteMessage;
             }
 
-            this.$snotify.confirm(message, 'Excluir registro', {
+            this.$snotify.confirm(message, this.deleteTitle, {
                 timeout: 5000,
                 showProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: false,
-                buttons: [
-                    { text: 'Sim', action: () => this.handleDelete(link), bold: false },
-                    { text: 'Não' },
+                buttons: [{
+                        text: 'Sim',
+                        action: () => this.handleDelete(link),
+                        bold: false
+                    },
+                    {
+                        text: 'Não'
+                    },
                 ]
             });
         },
+
+        listenFilters() {
+            this.$on('setFilter', (payload) => {
+                this.setFilter(payload.urlKey, payload.value);
+                this.fetchData();
+            });
+        },
+
+        setFilter(name, value) {
+            if (value) {
+                this.$set(this.filters, name, value)
+            } else {
+                delete this.filters[name];
+                this.filters = Object.assign({}, this.filters);
+            }
+        },
+
+        listenLoadingEvents() {
+            this.$on('start-loading', () => {
+                this.loading = true;
+            });
+
+            this.$on('stop-loading', () => {
+                this.loading = false;
+            });
+        },
+
+        setDepartmentId(id) {
+            this.departmentId = id;
+        }
     },
 }
 </script>

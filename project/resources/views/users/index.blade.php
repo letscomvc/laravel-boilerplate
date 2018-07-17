@@ -1,17 +1,27 @@
 @extends('layouts.app')
 
+@section('breadcrumb')
+    <breadcrumb header="Usuários">
+        <breadcrumb-item href="{{ route('home') }}">
+            Home
+        </breadcrumb-item>
+
+        <breadcrumb-item active>
+            Usuários
+        </breadcrumb-item>
+    </breadcrumb>
+@endsection
+
 @section('content')
-    <div class="container">
-        <div class="row mt-3">
-            <div class="col-md-12">
-                <data-list data-source="{{ route('pagination.users') }}"
-                           delete-message="Tem certeza que deseja apagar este registro ?"
-                           url-create="{{ route('users.create') }}"
-                           label-create="Novo usuário"
-                           />
-           </div>
-       </div>
+<div class="row mt-3">
+    <div class="col-md-12">
+        <data-list data-source="{{ route('pagination.users') }}"
+                   delete-message="Tem certeza que deseja apagar este registro ?"
+                   url-create="{{ route('users.create') }}"
+                   label-create="Novo usuário"
+                   />
    </div>
+</div>
 @endsection
 
 @section('custom-template')

@@ -17,12 +17,14 @@ class PaginationBuilder
     private $criterias;
     private $collection;
     private $repository;
+    private $defaultOrderBy;
+    private $originalRepository;
 
     public function __construct()
     {
         $this->perPage = config('pagination.per_page_default');
         $this->resource = null;
-        $this->criterias = collect($this->getDefaultCriterias());
+        $this->criterias = collect();
         $this->repository = null;
     }
 
@@ -122,6 +124,22 @@ class PaginationBuilder
     }
 
     /**
+     * Define a ordem padrão de ordenação.
+     * @param  $field
+     * @param  $order
+     * @return self
+     */
+    public function defaultOrderBy($field, $order = 'desc')
+    {
+        $this->defaultOrderBy = [
+            'field' => $field,
+            'order' => strtolower($order),
+        ];
+
+        return $this;
+    }
+
+    /**
      * Constrói e retorna a paginação
      *
      * @return Illuminate\Pagination\LengthAwarePaginator
@@ -150,7 +168,7 @@ class PaginationBuilder
      */
     private function getDefaultCriterias()
     {
-        $default_criterias[] = new OrderResolvedByUrlCriteria();
+        $default_criterias[] = new OrderResolvedByUrlCriteria($this->defaultOrderBy ?? []);
         $default_criterias[] = new SearchResolvedByUrlCriteria();
 
         return $default_criterias;
@@ -158,7 +176,10 @@ class PaginationBuilder
 
     private function buildForRepository()
     {
-        $this->repository->pushCriteria($this->criterias);
+        $criterias = collect($this->getDefaultCriterias())
+            ->merge($this->criterias);
+
+        $this->repository->pushCriteria($criterias);
 
         return $this->repository->paginate($this->perPage);
     }
@@ -171,6 +192,16 @@ class PaginationBuilder
 
         if (!$this->collection instanceof Collection) {
             $this->collection = collect($this->collection);
+        }
+
+        if ($this->defaultOrderBy) {
+            $order = array_get($this->defaultOrderBy, 'order');
+            $field = array_get($this->defaultOrderBy, 'field');
+            if ($order == 'desc') {
+                $this->collection = $this->collection->sortByDesc($field);
+            } else {
+                $this->collection = $this->collection->sortBy($field);
+            }
         }
 
         return $this->collection->paginate($this->perPage);

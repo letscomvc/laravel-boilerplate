@@ -8,22 +8,22 @@ class Flash
 
     public function success($message)
     {
-        $this->create('success', $message);
+        return $this->create('success', $message);
     }
 
     public function info($message)
     {
-        $this->create('info', $message);
+        return $this->create('info', $message);
     }
 
     public function warning($message)
     {
-        $this->create('warning', $message);
+        return $this->create('warning', $message);
     }
 
     public function error($message)
     {
-        $this->create('error', $message);
+        return $this->create('error', $message);
     }
 
     public function create($type, $messages)
@@ -38,5 +38,7 @@ class Flash
         foreach ($this->messages as $key => $messages) {
             \Session::flash($key, $messages);
         }
+
+        return $this;
     }
 }

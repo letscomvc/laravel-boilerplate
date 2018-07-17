@@ -47,8 +47,8 @@ class Controller extends BaseController
      * @param string $route_to_redirect Rota para redirecionamento caso não seja XHR.
      * @return mixed JSON ou Redirect;
      */
-    public function chooseReturn($type, $message, $route_to_redirect = null)
+    public function chooseReturn($type, $message, $route_to_redirect = null, $id = null)
     {
-        return ChooseReturn::choose($type, $message, $route_to_redirect);
+        return ChooseReturn::choose($type, $message, $route_to_redirect, $id);
     }
 }

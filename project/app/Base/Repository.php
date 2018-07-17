@@ -1,8 +1,8 @@
 <?php
 namespace App\Base;
 
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 use App\Base\Criteria;
 use App\Contracts\Repositories\CriteriaContract;
@@ -43,9 +43,40 @@ abstract class Repository implements CriteriaContract
 
     abstract protected function getClass();
 
-    private function resetQuery()
+    protected function resetQuery()
     {
         $this->model = $this->makeModel();
+    }
+
+    protected function returnOrFindModel($element)
+    {
+        $class = $this->getClass();
+        if ($element instanceof $class) {
+            return $element;
+        }
+
+        if (is_numeric($element)) {
+            return $this->model->findOrFail($element);
+        }
+    }
+
+    protected function returnOrFindModelWithTrashed($element)
+    {
+        $class = $this->getClass();
+        if ($element instanceof $class) {
+            return $element;
+        }
+
+        if (is_numeric($element)) {
+            return $this->model->withTrashed()->findOrFail($element);
+        }
+    }
+
+    public function first()
+    {
+        $this->resetQuery();
+        $this->applyCriteria();
+        return $this->model->first();
     }
 
     public function all($columns = ['*'])
@@ -69,13 +100,37 @@ abstract class Repository implements CriteriaContract
         return $this->model->find($id);
     }
 
+    public function findOrNew($id, $columns = ['*'])
+    {
+        $this->resetQuery();
+        $this->applyCriteria();
+        return $this->model->findOrNew($id);
+    }
+
+    public function firstOrCreate($data)
+    {
+        $this->resetQuery();
+        $this->applyCriteria();
+        return $this->model->firstOrCreate($data);
+    }
+
     public function findBy($field, $value, $columns = ['*'])
     {
         $this->resetQuery();
         $this->applyCriteria();
-        $query = $this->model->where($field, '=', $value)
+        $query = $this->model->where($field, $value)
                              ->addSelect($columns);
         return $query;
+    }
+
+    public function whereIn(string $field, array $values, array $columns = ['*'])
+    {
+        $this->resetQuery();
+        $this->applyCriteria();
+        $query = $this->model
+            ->whereIn($field, $values)
+            ->addSelect($columns);
+        return $query->get();
     }
 
     public function create($data)
@@ -86,10 +141,11 @@ abstract class Repository implements CriteriaContract
     public function activate($id)
     {
         $this->resetQuery();
-        $model = $this->model->find($id);
+        $model = $this->returnOrFindModel($id);
         if ($model) {
             $model->is_active = true;
-            return $model->save();
+            $model->save();
+            return $model;
         }
 
         throw new RepositoryException("Model not found.", 404);
@@ -98,23 +154,46 @@ abstract class Repository implements CriteriaContract
     public function deactivate($id)
     {
         $this->resetQuery();
-        $model = $this->model->findOrFail($id);
-        $model->is_active = false;
-        return $model->save();
+        $model = $this->returnOrFindModel($id);
+        if ($model) {
+            $model->is_active = false;
+            $model->save();
+            return $model;
+        }
+
+        throw new RepositoryException("Model not found.", 404);
     }
 
     public function delete($id)
     {
         $this->resetQuery();
-        $model = $this->model->findOrFail($id);
+        $model = $this->returnOrFindModel($id);
         $model->delete();
         return $model;
+    }
+
+    public function deleteMultiple($ids)
+    {
+        $this->resetQuery();
+        return $this->model->whereIn('id', $ids)->delete();
+    }
+
+    public function restore($id)
+    {
+        $this->resetQuery();
+        $trashedModel = $this->returnOrFindModelWithTrashed($id);
+
+        if ($trashedModel->trashed()) {
+            $trashedModel->restore();
+        }
+
+        return $trashedModel;
     }
 
     public function update($id, $data)
     {
         $this->resetQuery();
-        $model = $this->model->find($id);
+        $model = $this->returnOrFindModel($id);
         $model->update($data);
 
         return $model;
@@ -225,5 +304,15 @@ abstract class Repository implements CriteriaContract
         }
 
         return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function toSql()
+    {
+        $this->resetQuery();
+        $this->applyCriteria();
+        return $this->model->toSql();
     }
 }
