@@ -1,5 +1,12 @@
+/* Filters */
 require('./filters');
+
+/* Data lists */
 Vue.component('data-list', require('./DataList.vue'));
+
+/* Breadcrumb */
+Vue.component('breadcrumb', require('./Breadcrumb.vue'));
+Vue.component('breadcrumb-item', require('./BreadcrumbItem.vue'));
 
 const app = new Vue({
     el: '#app',
