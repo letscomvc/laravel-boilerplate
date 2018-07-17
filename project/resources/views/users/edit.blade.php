@@ -3,18 +3,18 @@
 @section('breadcrumb')
 <breadcrumb header="Editar usuário">
     <breadcrumb-item href="{{ route('home') }}">
-        Home
+        @lang('headings._home')
     </breadcrumb-item>
 
     <breadcrumb-item active>
-        Usuários
+        @lang('headings.users.edit')
     </breadcrumb-item>
 </breadcrumb>
 @endsection
 
 @section('content')
 <div class="card">
-    <div class="card-header">Cadastrar usuário</div>
+    <div class="card-header">@lang('headings.users.edit')</div>
     <div class="card-body">
         <form class="form-horizontal" method="POST" action="{{ route('users.update', $user->id) }}">
             @method('PUT')

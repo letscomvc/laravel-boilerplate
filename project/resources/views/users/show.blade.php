@@ -3,11 +3,11 @@
 @section('breadcrumb')
     <breadcrumb header="Visualizar usuário">
         <breadcrumb-item href="{{ route('home') }}">
-            Home
+            @lang('headings.users.create')
         </breadcrumb-item>
 
         <breadcrumb-item active>
-            Usuários
+            @lang('headings.users.show')
         </breadcrumb-item>
     </breadcrumb>
 @endsection
