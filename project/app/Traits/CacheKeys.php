@@ -4,10 +4,10 @@ namespace App\Traits;
 
 trait CacheKeys
 {
-    private function cacheKeyUpgradeable($type = '')
+    public function cacheKeyUpgradeable($suffix = '')
     {
-        if ($type != '') {
-            $type = str_start($type, ':');
+        if ($suffix != '') {
+            $suffix = str_start($suffix, ':');
         }
 
         return sprintf(
@@ -15,21 +15,21 @@ trait CacheKeys
             $this->getTable(),
             $this->getKey(),
             $this->updated_at->timestamp,
-            $type
+            $suffix
         );
     }
 
-    private function cacheKey($type = '')
+    public function cacheKey($suffix = '')
     {
-        if ($type != '') {
-            $type = str_start($type, ':');
+        if ($suffix != '') {
+            $suffix = str_start($suffix, ':');
         }
 
         return sprintf(
             "%s/%s%s",
             $this->getTable(),
             $this->getKey(),
-            $type
+            $suffix
         );
     }
 }
