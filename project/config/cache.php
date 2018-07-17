@@ -2,6 +2,8 @@
 
 return [
 
+    'enable_application_cache' => env('APPLICATION_CACHE', true),
+
     /*
     |--------------------------------------------------------------------------
     | Default Cache Store
