@@ -1,12 +1,12 @@
 <template>
-<li v-if="active" class="breadcrumb-item active">
-    <slot>Breadcrumb Item</slot>
-</li>
-<li v-else class="breadcrumb-item">
-    <a :href="href">
+    <li v-if="active" class="breadcrumb-item active">
         <slot>Breadcrumb Item</slot>
-    </a>
-</li>
+    </li>
+    <li v-else class="breadcrumb-item">
+        <a :href="href">
+            <slot>Breadcrumb Item</slot>
+        </a>
+    </li>
 </template>
 
 <script>
