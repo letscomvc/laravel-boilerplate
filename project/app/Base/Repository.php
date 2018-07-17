@@ -127,8 +127,9 @@ abstract class Repository implements CriteriaContract
     {
         $this->resetQuery();
         $this->applyCriteria();
-        $query = $this->model->whereIn($field, $values)
-                             ->addSelect($columns);
+        $query = $this->model
+            ->whereIn($field, $values)
+            ->addSelect($columns);
         return $query->get();
     }
 
