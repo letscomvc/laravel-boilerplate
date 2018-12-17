@@ -1,7 +1,7 @@
 <?php
-namespace App\Base;
+namespace App\Repositories\Criterias;
 
-use App\Base\Repository;
+use App\Repositories\Repository;
 
 abstract class Criteria
 {

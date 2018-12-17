@@ -1,10 +1,10 @@
 <?php
-namespace App\Base;
+namespace App\Repositories;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
-use App\Base\Criteria;
+use App\Repositories\Criterias\Criteria;
 use App\Contracts\Repositories\CriteriaContract;
 use App\Exceptions\Repositories\RepositoryException;
 

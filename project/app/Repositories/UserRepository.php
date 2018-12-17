@@ -2,7 +2,7 @@
 namespace App\Repositories;
 
 use App\Models\User;
-use App\Base\Repository;
+use App\Repositories\Repository;
 
 class UserRepository extends Repository
 {

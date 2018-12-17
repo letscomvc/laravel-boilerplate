@@ -222,21 +222,21 @@ function pagination()
 /**
  * Retorna uma instância do helper BreadCrumb
  *
- * @return \App\Helpers\BreadCrumb
+ * @return \App\Support\BreadCrumb
  */
 function breadcrumb()
 {
-    return new \App\Helpers\BreadCrumb();
+    return new \App\Support\BreadCrumb();
 }
 
 /**
  * Retorna uma instância do helper Flash
  *
- * @return \App\Helpers\Flash
+ * @return \App\Support\Flash
  */
 function flash()
 {
-    return new \App\Helpers\Flash();
+    return new \App\Support\Flash();
 }
 
 /**
@@ -366,4 +366,23 @@ function when($condition, $value, $default = null)
     return func_num_args() === 3
         ? value($default)
         : null;
+}
+
+/**
+ * Validate if param is a valid URL;
+ * @param  string $uil
+ * @return boolean
+ */
+function is_valid_url(string $url)
+{
+    return (bool) filter_var($url, FILTER_VALIDATE_URL);
+}
+
+/**
+ * Return wether application cache is enabled.
+ * @return boolean Application cache is enabled.
+ */
+function application_cache_is_enabled()
+{
+    return config('cache.enable_application_cache');
 }

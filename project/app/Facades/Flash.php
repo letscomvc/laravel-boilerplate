@@ -12,6 +12,6 @@ class Flash extends Facade {
      */
     protected static function getFacadeAccessor()
     {
-        return 'App\Helpers\Flash';
+        return 'App\Support\Flash';
     }
 }

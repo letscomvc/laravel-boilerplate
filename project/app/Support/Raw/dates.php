@@ -3,7 +3,7 @@
  * All files in this folder will be included in the application.
  */
 
-use App\Helpers\DateHelper;
+use App\Support\DateHelper;
 
 if (! function_exists('format_of_date')) {
     /**

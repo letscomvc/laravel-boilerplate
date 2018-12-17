@@ -4,7 +4,7 @@ use Illuminate\Database\Seeder;
 
 use Spatie\Permission\Models\Permission;
 
-use App\Helpers\PermissionsHelper;
+use App\Support\PermissionsHelper;
 
 class PermissionsTableSeeder extends Seeder
 {
