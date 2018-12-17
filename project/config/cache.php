@@ -2,6 +2,9 @@
 
 return [
 
+    /**
+     * Defines wether custom application caches is used.
+     */
     'enable_application_cache' => env('APPLICATION_CACHE', true),
 
     /*

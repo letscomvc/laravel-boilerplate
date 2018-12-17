@@ -377,3 +377,12 @@ function is_valid_url(string $url)
 {
     return (bool) filter_var($url, FILTER_VALIDATE_URL);
 }
+
+/**
+ * Return wether application cache is enabled.
+ * @return boolean Application cache is enabled.
+ */
+function application_cache_is_enabled()
+{
+    return config('cache.enable_application_cache');
+}
