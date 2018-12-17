@@ -3,8 +3,8 @@ namespace App\Repositories\Criterias\Common;
 
 use Illuminate\Support\Facades\Input;
 
-use App\Base\Criteria;
-use App\Base\Repository;
+use App\Repositories\Criterias\Criteria;
+use App\Repositories\Repository;
 
 class OrderResolvedByUrlCriteria extends Criteria
 {

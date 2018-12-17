@@ -1,7 +1,7 @@
 <?php
 namespace App\Contracts\Repositories;
 
-use App\Base\Criteria;
+use App\Repositories\Criterias\Criteria;
 
 /**
  * Interface CriteriaInterface

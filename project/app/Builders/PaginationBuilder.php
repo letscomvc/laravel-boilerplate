@@ -6,7 +6,7 @@ use Illuminate\Http\Resources\Json\Resource;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-use App\Base\Repository;
+use App\Repositories\Repository;
 
 use App\Repositories\Criterias\Common\OrderResolvedByUrlCriteria;
 use App\Repositories\Criterias\Common\SearchResolvedByUrlCriteria;
@@ -34,7 +34,7 @@ class PaginationBuilder implements Responsable
      *
      * Pode receber uma instância de repositório ou sua respectiva classe.
      *
-     * @param App\Base\Repository $repository
+     * @param App\Repositories\Repository $repository
      * @return App\Builders\PaginationBuilder
      */
     public function repository($repository)
