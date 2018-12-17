@@ -3,6 +3,7 @@ namespace App\Builders;
 
 use Illuminate\Support\Collection;
 use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 use App\Base\Repository;
@@ -10,7 +11,7 @@ use App\Base\Repository;
 use App\Repositories\Criterias\Common\OrderResolvedByUrlCriteria;
 use App\Repositories\Criterias\Common\SearchResolvedByUrlCriteria;
 
-class PaginationBuilder
+class PaginationBuilder implements Responsable
 {
     private $perPage;
     private $resource;
@@ -160,6 +161,17 @@ class PaginationBuilder
     }
 
     /**
+     * Create an HTTP response that represents the object.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function toResponse($request)
+    {
+        return $this->build()->response();
+    }
+
+    /**
      * Define critérios padrões para todas as paginações.
      *
      * Os critérios podem ser anulados utilizando o método 'cleanCriterias'.
@@ -168,16 +180,17 @@ class PaginationBuilder
      */
     private function getDefaultCriterias()
     {
-        $default_criterias[] = new OrderResolvedByUrlCriteria($this->defaultOrderBy ?? []);
-        $default_criterias[] = new SearchResolvedByUrlCriteria();
+        $defaultCriterias[] = new OrderResolvedByUrlCriteria($this->defaultOrderBy ?? []);
+        $defaultCriterias[] = new SearchResolvedByUrlCriteria();
 
-        return $default_criterias;
+        return $defaultCriterias;
     }
 
     private function buildForRepository()
     {
-        $criterias = collect($this->getDefaultCriterias())
-            ->merge($this->criterias);
+        $defaultCriterias = collect($this->getDefaultCriterias());
+        $criterias = $this->criterias
+            ->merge($defaultCriterias);
 
         $this->repository->pushCriteria($criterias);
 
