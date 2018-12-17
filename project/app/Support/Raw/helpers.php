@@ -367,3 +367,13 @@ function when($condition, $value, $default = null)
         ? value($default)
         : null;
 }
+
+/**
+ * Validate if param is a valid URL;
+ * @param  string $uil
+ * @return boolean
+ */
+function is_valid_url(string $url)
+{
+    return (bool) filter_var($url, FILTER_VALIDATE_URL);
+}
