@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Helpers;
+namespace App\Support;
 
 use Illuminate\Contracts\Support\Responsable;
 

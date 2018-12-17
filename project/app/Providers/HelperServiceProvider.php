@@ -23,7 +23,7 @@ class HelperServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        foreach (glob(app_path().'/Helpers/Raw/*.php') as $filename) {
+        foreach (glob(app_path().'/Support/Raw/*.php') as $filename) {
             require_once($filename);
         }
     }

@@ -222,21 +222,21 @@ function pagination()
 /**
  * Retorna uma instância do helper BreadCrumb
  *
- * @return \App\Helpers\BreadCrumb
+ * @return \App\Support\BreadCrumb
  */
 function breadcrumb()
 {
-    return new \App\Helpers\BreadCrumb();
+    return new \App\Support\BreadCrumb();
 }
 
 /**
  * Retorna uma instância do helper Flash
  *
- * @return \App\Helpers\Flash
+ * @return \App\Support\Flash
  */
 function flash()
 {
-    return new \App\Helpers\Flash();
+    return new \App\Support\Flash();
 }
 
 /**
