@@ -1,0 +1,63 @@
+version: '2'
+
+volumes:
+    app-postgres-data:
+        driver: local
+
+services:
+    app:
+        build: devops/environments/development/dockerfiles/backend/.
+        ports:
+            - "80:8080"
+        volumes:
+            - ./project:/var/www/app
+        links:
+            - postgres
+            - redis
+
+    postgres:
+        image: postgres:10.3
+        volumes:
+            - app-postgres-data:/var/lib/postgresql/data
+        ports:
+            - "5432:5432"
+        environment:
+            - POSTGRES_PASSWORD=letssistemas
+            - POSTGRES_DB=app_dev
+            - POSTGRES_USER=postgres
+
+    redis:
+        image: redis:4.0
+        command: --appendonly no
+        ports:
+            - "6379:6379"
+
+    laravel-echo:
+         build: devops/environments/development/dockerfiles/real-time/.
+         ports:
+          - "6001:6001"
+         links:
+         - redis
+         volumes:
+           - ./devops/environments/development/real-time/laravel-echo-server.json:/app/laravel-echo-server.json:ro
+
+    worker:
+         build: devops/environments/development/dockerfiles/worker/.
+         links:
+          - postgres
+         volumes:
+          - ./project:/var/www/app
+
+    pgadmin:
+        image: dpage/pgadmin4
+        environment:
+            - PGADMIN_DEFAULT_EMAIL=admin@letsgrow.com.br
+            - PGADMIN_DEFAULT_PASSWORD=letssistemas
+        ports:
+            - "5001:80"
+
+    mailcatcher:
+        image: schickling/mailcatcher
+        ports:
+            - "1080:1080"
+            - "1025:1025"
