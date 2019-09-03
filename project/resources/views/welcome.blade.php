@@ -79,7 +79,7 @@
 
         <div class="content">
             <div class="title m-b-md">
-                Let's Grow Sistemas
+                Let's Sistemas
             </div>
         </div>
     </div>

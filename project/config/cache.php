@@ -3,9 +3,19 @@
 return [
 
     /**
-     * Defines wether custom application caches is used.
+     *  Habilita o cache externo da aplicação. Atualmente utiliza-se o redis.
+     *  Este tipo de cache é utilizado para armazenar informações em um prazo maior,
+     * onde pode ser compartilhado entre usuários.
      */
     'enable_application_cache' => env('APPLICATION_CACHE', true),
+
+    /**
+     *  Quando 'true', habilita o cache temporário de requisição na aplicação.
+     *  Este tipo de cache é utilizado para armazenar resultados processados que
+     * serão utilizados mais tarde na mesma requisição e que não poderão ser
+     * reaproveitado em uma nova requisição.
+     */
+    'enable_application_request_cache' => env('APPLICATION_REQUEST_CACHE', true),
 
     /*
     |--------------------------------------------------------------------------
