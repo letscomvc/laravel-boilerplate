@@ -27,5 +27,4 @@ RUN sudo wget https://github.com/madnight/docker-alpine-wkhtmltopdf/raw/master/w
 
 RUN sudo sed -i -e 's/^memory_limit = .*$/memory_limit = 512M/g' /etc/php7/php.ini;
 
-RUN sudo apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community gnu-libiconv
 ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
