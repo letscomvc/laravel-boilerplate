@@ -38,14 +38,14 @@ class UserTest extends TestCase
     {
         $user = [
             'email' => 'test@not.exists.com',
-            'password' => '123456',
+            'password' => '12345678',
         ];
 
         $this->assertInvalidCredentials($user);
 
         $userWithoutEmail = [
             'email' => '',
-            'password' => '123456',
+            'password' => '12345678',
         ];
         $this->assertInvalidCredentials($userWithoutEmail);
 
