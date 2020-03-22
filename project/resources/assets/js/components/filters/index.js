@@ -1,2 +1,2 @@
-Vue.component('filter-text', require('./Text.vue'))
-Vue.component('filter-checkbox', require('./Checkbox.vue'))
+Vue.component('filter-text', require('./Text.vue').default)
+Vue.component('filter-checkbox', require('./Checkbox.vue').default)
