@@ -3,16 +3,16 @@
 namespace Tests\Feature\Auth;
 
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
+use Tests\Cases\TestCaseFeature;
 
-class RegisterTest extends TestCase
+class RegisterTest extends TestCaseFeature
 {
 
-    /** @test  */
+    /** @test */
     public function shouldHaveCorrectRegisterUrl()
     {
         $this->get(route('register'))
-             ->assertStatus(200);
+            ->assertStatus(200);
     }
 
     /** @test */
@@ -27,17 +27,17 @@ class RegisterTest extends TestCase
         ];
 
         $this->call('POST', route('register'), $userWithoutNameAndEmail)
-             ->assertSessionHasErrors('name')
-             ->assertSessionHasErrors('email')
-             ->assertSessionHasErrors('password');
+            ->assertSessionHasErrors('name')
+            ->assertSessionHasErrors('email')
+            ->assertSessionHasErrors('password');
 
         $userWithoutNameAndEmail['password'] = '';
         $this->call('POST', route('register'), $userWithoutNameAndEmail)
-             ->assertSessionHasErrors('password');
+            ->assertSessionHasErrors('password');
 
         $userWithoutNameAndEmail['email'] = 'teste sem arroba';
         $this->call('POST', route('register'), $userWithoutNameAndEmail)
-             ->assertSessionHasErrors('email');
+            ->assertSessionHasErrors('email');
     }
 
     /** @test */
@@ -52,7 +52,7 @@ class RegisterTest extends TestCase
         ];
 
         $this->call('POST', route('register'), $user)
-             ->assertRedirect(route('home'));
+            ->assertRedirect(route('home'));
 
         $this->call('POST', '/login', $user);
 

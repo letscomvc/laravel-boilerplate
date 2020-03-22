@@ -4,30 +4,28 @@ namespace App\Support;
 
 class PermissionsHelper
 {
-    private static function getImplodedPermissions($prefix, $permission)
+    public static function getFlattenPermissions(array $arrayOfPermissions, ?string $globalPrefix = null)
     {
-        if (is_int($prefix)) {
-            return [$permission];
+        $handledPermissions = [];
+
+        foreach ($arrayOfPermissions as $prefix => $permission) {
+            $newPrefix = (!is_int($prefix))
+                ? $globalPrefix.' '.$prefix
+                : $globalPrefix;
+
+            $implodedPermission = static::getImplodedPermissions($permission, $newPrefix);
+            array_push($handledPermissions, ...$implodedPermission);
         }
 
-        if (is_array($permission)) {
-            $implodedPermissions = [];
-            foreach ($permission as $index => $action) {
-                $implodedPermissions[] = "{$prefix} {$action}";
-            }
-            return $implodedPermissions;
-        }
-
-        return ["{$prefix} {$permission}"];
+        return $handledPermissions;
     }
 
-    public static function getFlattenPermissions($arrayOfPermissions)
+    private static function getImplodedPermissions($permission, ?string $prefix)
     {
-        $handled_permissions = [];
-        foreach ($arrayOfPermissions as $prefix => $permission) {
-            $imploded_permission = static::getImplodedPermissions($prefix, $permission);
-            $handled_permissions = array_merge($handled_permissions, $imploded_permission);
+        if (is_array($permission)) {
+            return static::getFlattenPermissions($permission, $prefix);
         }
-        return $handled_permissions;
+
+        return [trim(trim($prefix).' '.trim($permission))];
     }
 }

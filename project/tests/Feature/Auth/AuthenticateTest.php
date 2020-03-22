@@ -2,17 +2,14 @@
 
 namespace Tests\Feature\Auth;
 
-use Illuminate\Foundation\Testing\WithFaker;
-
-use Tests\TestCase;
-
 use App\Models\User;
+use Tests\Cases\TestCaseFeature;
 
-class UserTest extends TestCase
+class UserTest extends TestCaseFeature
 {
     private $user;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->user = factory(User::class)->create();
@@ -29,8 +26,8 @@ class UserTest extends TestCase
     public function shouldRedirectToLoginWhenNotAuthenticated()
     {
         $this->get(route('users.index'))
-             ->assertStatus(302)
-             ->assertRedirect(route('login'));
+            ->assertStatus(302)
+            ->assertRedirect(route('login'));
     }
 
     /** @test */
@@ -69,10 +66,10 @@ class UserTest extends TestCase
         $this->assertCredentials($credentials);
 
         $response = $this->call('POST', '/login', [
-               'email' => $credentials['email'],
-               'password' => $credentials['password'],
-               '_token' => csrf_token()
-           ]);
+            'email' => $credentials['email'],
+            'password' => $credentials['password'],
+            '_token' => csrf_token()
+        ]);
 
         $this->assertAuthenticated();
     }
@@ -92,7 +89,7 @@ class UserTest extends TestCase
         ]);
 
         $this->call('POST', route('logout'), ['_token' => csrf_token()])
-             ->assertRedirect('/');
+            ->assertRedirect('/');
 
         $this->assertGuest();
     }

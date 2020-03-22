@@ -44,26 +44,33 @@ class DateHelper
         return $dates ?? [];
     }
 
-    /**
-     * Transforma uma string de período em uma array separando-as e formatando
-     * @param  string $period
-     * @param  string $separator
-     * @param  $fromFormat
+     /**
+     * Dado um intervalo em string, converte para uma array com os devidos formatos
+     *  para o banco de dados
+     *
+     * @param  string  $period
+     * @param  string  $periodSeparator
      * @return array
      */
-    public static function convertDateInterval($period, $separator = '-', $fromFormat = null)
+    public static function convertDateInterval(string $period, string $periodSeparator = '-')
     {
-        if (!$fromFormat) {
-            $fromFormat = format_of_date();
+        $dateInterval = explode($periodSeparator, $period);
+
+        if (sizeof($dateInterval) > 2) {
+            throw new \RuntimeException("Invalid period [{$period}]");
         }
 
-        $dateInterval = explode($separator, $period);
-        $dateInterval = array_map(function($date) use ($fromFormat) {
-            return \Carbon\Carbon::createFromFormat($fromFormat, trim($date));
-        }, $dateInterval);
+        $dateInterval[0] = static::formatDate(
+            trim($dateInterval[0]),
+            'Y-m-d 00:00:00',
+            static::getDateFormat()
+        );
 
-        $dateInterval[0] = $dateInterval[0]->startOfDay();
-        $dateInterval[1] = $dateInterval[1]->endOfDay();
+        $dateInterval[1] = static::formatDate(
+            trim($dateInterval[1] ?? $period),
+            'Y-m-d 23:59:59',
+            static::getDateFormat()
+        );
 
         return $dateInterval;
     }
