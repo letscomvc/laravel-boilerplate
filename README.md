@@ -39,3 +39,6 @@ Para mais informações sobre o laravel-docker, acesse a [página de documentaç
 
 ## Instalar o projeto diretamente na máquina ##
 Para aprender a configurar o projeto ná própria máquina, leia o documento [Setup Baremetal](docs/setup-baremetal.md)
+
+## LICENÇA
+Licença MIT (MIT). Por favor, leia o [Arquivo de Licença](LICENSE) para mais informações.
