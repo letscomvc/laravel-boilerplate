@@ -2,13 +2,10 @@
 
 namespace Tests;
 
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Contracts\Console\Kernel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 trait CreatesApplication
 {
-    use RefreshDatabase;
     /**
      * Creates the application.
      *
@@ -16,13 +13,11 @@ trait CreatesApplication
      */
     public function createApplication()
     {
-        putenv('DB_CONNECTION=sqlite_testing');
-
         $app = require __DIR__.'/../bootstrap/app.php';
 
-        $app->make(Kernel::class)->bootstrap();
+        $app->loadEnvironmentFrom('.env.testing');
 
-        Hash::setRounds(4);
+        $app->make(Kernel::class)->bootstrap();
 
         return $app;
     }

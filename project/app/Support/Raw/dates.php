@@ -44,14 +44,15 @@ if (! function_exists('generate_date_range')) {
 
 if (!function_exists('convert_date_interval')) {
     /**
-     * Transforma uma string de período em uma array separando-as e formatando
-     * @param  string $period
-     * @param  string $separator
-     * @param  $fromFormat
+     * Dado um intervalo em string, converte para uma array com os devidos formatos
+     * para o banco de dados
+     *
+     * @param  string  $period
+     * @param  string  $periodSeparator
      * @return array
      */
-    function convert_date_interval($period, $separator = '-', $fromFormat = null)
+    function convert_date_interval($period, string $periodSeparator = '-')
     {
-        return DateHelper::convertDateInterval($period, $separator, $fromFormat);
+        return DateHelper::convertDateInterval($period, $periodSeparator);
     }
 }
