@@ -1,63 +1,52 @@
-version: '2'
+version: '3'
 
 volumes:
-    app-postgres-data:
-        driver: local
+  app-postgres-data:
+    driver: local
 
 services:
-    app:
-        build: devops/environments/development/dockerfiles/backend/.
-        ports:
-            - "80:8080"
-        volumes:
-            - ./project:/var/www/app
-        links:
-            - postgres
-            - redis
+  web:
+    image: nginx:latest
+    ports:
+      - 80:8080
+    volumes:
+      - ${LARAVEL_ROOT_PATH-./}:/var/www/app
+      - ./environment/docker/web/site.conf:/etc/nginx/conf.d/site.conf
 
-    postgres:
-        image: postgres:10.3
-        volumes:
-            - app-postgres-data:/var/lib/postgresql/data
-        ports:
-            - "5432:5432"
-        environment:
-            - POSTGRES_PASSWORD=letssistemas
-            - POSTGRES_DB=app_dev
-            - POSTGRES_USER=postgres
+  app:
+    build: environment/docker/app/.
+    volumes:
+      - ${LARAVEL_ROOT_PATH-./}:/var/www/app
 
-    redis:
-        image: redis:4.0
-        command: --appendonly no
-        ports:
-            - "6379:6379"
+  postgres:
+    image: postgres:10.3
+    volumes:
+      - app-postgres-data:/var/lib/postgresql/data
+      - ./environment/docker/postgres/scripts:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_MULTIPLE_DATABASES=${APP_NAME-app}_dev,${APP_NAME-app}_test
+      - POSTGRES_PASSWORD=laraveldocker
+      - POSTGRES_USER=postgres
 
-    laravel-echo:
-         build: devops/environments/development/dockerfiles/real-time/.
-         ports:
-          - "6001:6001"
-         links:
-         - redis
-         volumes:
-           - ./devops/environments/development/real-time/laravel-echo-server.json:/app/laravel-echo-server.json:ro
+  redis:
+    image: redis:5.0
+    command: --appendonly no
 
-    worker:
-         build: devops/environments/development/dockerfiles/worker/.
-         links:
-          - postgres
-         volumes:
-          - ./project:/var/www/app
+  laravel-echo:
+    build: environment/docker/laravel-echo/.
+    ports:
+      - "6001:6001"
+    volumes:
+      - ./environment/docker/laravel-echo/laravel-echo-server.json:/app/laravel-echo-server.json:ro
 
-    pgadmin:
-        image: dpage/pgadmin4
-        environment:
-            - PGADMIN_DEFAULT_EMAIL=admin@letsgrow.com.br
-            - PGADMIN_DEFAULT_PASSWORD=letssistemas
-        ports:
-            - "5001:80"
+  worker:
+    build: environment/docker/worker/.
+    volumes:
+      - ${LARAVEL_ROOT_PATH-./}:/var/www/app
 
-    mailcatcher:
-        image: schickling/mailcatcher
-        ports:
-            - "1080:1080"
-            - "1025:1025"
+  mailcatcher:
+    image: schickling/mailcatcher
+    ports:
+      - "1080:1080"
