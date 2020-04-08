@@ -49,22 +49,9 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapWebRoutes()
     {
-        $this->mapDefaultWebRoutes();
-
         $this->mapUnauthenticatedWebRoutes();
-
         $this->mapAuthenticatedWebRoutes();
-
         $this->mapPaginationRoutes();
-
-        $this->mapAjaxRoutes();
-    }
-
-    protected function mapDefaultWebRoutes()
-    {
-        Route::middleware('web')
-             ->namespace($this->namespace)
-             ->group(base_path('routes/web.php'));
     }
 
     protected function mapUnauthenticatedWebRoutes()
@@ -89,13 +76,6 @@ class RouteServiceProvider extends ServiceProvider
              ->group(base_path('routes/web/pagination.php'));
     }
 
-    protected function mapAjaxRoutes()
-    {
-        Route::middleware(['web', 'auth'])
-             ->namespace($this->namespace)
-             ->prefix('ajax')
-             ->group(base_path('routes/web/ajax.php'));
-    }
     /**
      * Define the "api" routes for the application.
      *
@@ -120,7 +100,6 @@ class RouteServiceProvider extends ServiceProvider
 
         Route::prefix('api/v1')
              ->middleware('api')
-             ->middleware('auth:api')
              ->namespace($namespace)
              ->group(base_path('routes/api/v1/unauthenticated.php'));
     }
