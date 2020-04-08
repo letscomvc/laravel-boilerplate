@@ -13,7 +13,7 @@ class Flash
     /**
      * @return $this
      */
-    public function reflash()
+    public function reflash(): self
     {
         if ($this->reflashed) {
             return $this;
@@ -29,7 +29,7 @@ class Flash
      * @param $message
      * @return $this
      */
-    public function success($message)
+    public function success($message): self
     {
         return $this->create('success', $message);
     }
@@ -38,7 +38,7 @@ class Flash
      * @param $message
      * @return $this
      */
-    public function info($message)
+    public function info($message): self
     {
         return $this->create('info', $message);
     }
@@ -47,7 +47,7 @@ class Flash
      * @param $message
      * @return $this
      */
-    public function warning($message)
+    public function warning($message): self
     {
         return $this->create('warning', $message);
     }
@@ -56,7 +56,7 @@ class Flash
      * @param $message
      * @return $this
      */
-    public function error($message)
+    public function error($message): self
     {
         return $this->create('error', $message);
     }
@@ -66,7 +66,7 @@ class Flash
      * @param  array|string  $messages
      * @return $this
      */
-    public function create(string $type, $messages)
+    public function create(string $type, $messages): self
     {
         $messages = (array) $messages;
 

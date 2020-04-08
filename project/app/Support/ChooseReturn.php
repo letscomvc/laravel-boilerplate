@@ -8,34 +8,44 @@ class ChooseReturn implements Responsable
 {
     /**
      * Response type
+     *
      * @var string
      */
     private $type;
 
     /**
      * Response payload
+     *
      * @var mixed
      */
     private $data;
 
     /**
      * Redirection route
+     *
      * @var string
      */
     private $route;
 
     /**
      * Response Message
+     *
      * @var string
      */
     private $message;
 
     /**
+     * @var bool
+     */
+    private $forceRedirect = false;
+
+    /**
      * Return a configured instance from ChooseReturn
-     * @param string $type success|error|info|warning
-     * @param string $message Response message
-     * @param string $route get route or routeName
-     * @param mixed $routeArguments Route arguments when preceded by route name
+     *
+     * @param  string  $type  success|error|info|warning
+     * @param  string  $message  Response message
+     * @param  string  $route  get route or routeName
+     * @param  mixed  $routeArguments  Route arguments when preceded by route name
      * @return self Configured ChooseReturn
      */
     public static function choose($type, $message, $route = null, $routeArguments = null)
@@ -54,11 +64,13 @@ class ChooseReturn implements Responsable
 
     /**
      * Set response type
-     * @param string $type success|error|info|warning
+     *
+     * @param  string  $type  success|error|info|warning
+     * @return \App\Support\ChooseReturn
      */
     public function setType($type)
     {
-        if (! in_array($type, ['success', 'error', 'info', 'warning'])) {
+        if (!in_array($type, ['success', 'error', 'info', 'warning'])) {
             throw new \InvalidArgumentException("Invalid response type [{$type}]", 500);
         }
 
@@ -68,8 +80,10 @@ class ChooseReturn implements Responsable
 
     /**
      * Set redirection route
-     * @param string $route get route or routeName
-     * @param mixed $routeArguments When preceded by route name, route arguments
+     *
+     * @param  string  $route  get route or routeName
+     * @param  mixed  $routeArguments  When preceded by route name, route arguments
+     * @return \App\Support\ChooseReturn
      */
     public function setRoute($route, $routeArguments = null)
     {
@@ -82,7 +96,9 @@ class ChooseReturn implements Responsable
 
     /**
      * Set response message
-     * @param string $message Response message
+     *
+     * @param  string  $message  Response message
+     * @return \App\Support\ChooseReturn
      */
     public function setMessage($message)
     {
@@ -92,7 +108,9 @@ class ChooseReturn implements Responsable
 
     /**
      * Set payload data
-     * @param mixed $data
+     *
+     * @param  mixed  $data
+     * @return \App\Support\ChooseReturn
      */
     public function setData($data)
     {
@@ -101,7 +119,19 @@ class ChooseReturn implements Responsable
     }
 
     /**
+     * Send redirect route when ajax
+     *
+     * @return $this
+     */
+    public function forceRedirect()
+    {
+        $this->forceRedirect = true;
+        return $this;
+    }
+
+    /**
      * Build the HTTP response according to the parameters
+     *
      * @return mixed HTTP response
      */
     public function build()
@@ -130,6 +160,7 @@ class ChooseReturn implements Responsable
 
     /**
      * Generates an ajax response according to the current attributes
+     *
      * @return \Illuminate\Http\Response Ajax Response
      */
     private function ajaxResponse()
@@ -139,9 +170,17 @@ class ChooseReturn implements Responsable
             'message' => $this->message ?? null,
         ];
 
+        if ($this->forceRedirect) {
+            $response['redirect'] = $this->route;
+            (new Flash())
+                ->create($this->type, $this->message ?? null)
+                ->reflash();
+        }
+
         if ($this->data) {
             $response['data'] = $this->data;
         }
+
         $code = ($this->type === 'error') ? 202 : 200;
 
         return response(json_encode($response), $code);
@@ -149,11 +188,12 @@ class ChooseReturn implements Responsable
 
     /**
      * Generates an redirect response and throw a flash message
+     *
      * @return \Illuminate\Http\RedirectResponse Redirect response
      */
     private function redirectResponse()
     {
-        flash()->create($this->type, $this->message);
+        (new Flash())->create($this->type, $this->message);
         return redirect()->to($this->route);
     }
 }

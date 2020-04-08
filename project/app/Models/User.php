@@ -6,13 +6,11 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 use Spatie\Permission\Traits\HasRoles;
-use Spatie\Activitylog\Traits\LogsActivity;
-
 use App\Scopes\Search as SearchScope;
 
 class User extends Authenticatable
 {
-    use Notifiable, HasRoles, LogsActivity, SearchScope;
+    use Notifiable, HasRoles, SearchScope;
 
     /**
      * The attributes that are used to search.
