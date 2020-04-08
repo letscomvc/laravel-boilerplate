@@ -5,7 +5,7 @@ namespace Tests\Feature\Auth;
 use App\Models\User;
 use Tests\Cases\TestCaseFeature;
 
-class UserTest extends TestCaseFeature
+class AuthenticateTest extends TestCaseFeature
 {
     private $user;
 

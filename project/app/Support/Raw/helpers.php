@@ -212,11 +212,11 @@ function is_active_route(array $routes, $output = 'active')
 /**
  * Retorna uma instância do builder de paginação.
  *
- * @return \App\Builders\PaginationBuilder
+ * @return \App\Support\PaginationBuilder
  */
 function pagination()
 {
-    return new \App\Builders\PaginationBuilder();
+    return new \App\Support\PaginationBuilder();
 }
 
 /**
