@@ -2,10 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
 use App\Repositories\UserRepository;
-
 use App\Http\Requests\UserRequest;
 use App\Http\Resources\User as UserResource;
 
