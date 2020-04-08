@@ -2,8 +2,8 @@
 
 namespace App\Support;
 
-use App\Repositories\Criterias\Common\OrderResolvedByUrlCriteria;
-use App\Repositories\Criterias\Common\SearchResolvedByUrlCriteria;
+use App\Repositories\Criteria\Common\OrderResolvedByUrlCriteria;
+use App\Repositories\Criteria\Common\SearchResolvedByUrlCriteria;
 use App\Repositories\Repository;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\Resources\Json\JsonResource;
