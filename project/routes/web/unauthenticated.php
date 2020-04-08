@@ -5,4 +5,4 @@
 
 Auth::routes();
 
-Route::get('/', 'SingleInvokes\WelcomeController');
+Route::get('/', 'WelcomeController');

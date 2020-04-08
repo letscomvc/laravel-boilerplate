@@ -2,26 +2,30 @@
 
 namespace App\Support;
 
-use App\Repositories\Criterias\Common\OrderResolvedByUrlCriteria;
-use App\Repositories\Criterias\Common\SearchResolvedByUrlCriteria;
+use App\Repositories\Criteria\Common\OrderResolvedByUrlCriteria;
+use App\Repositories\Criteria\Common\SearchResolvedByUrlCriteria;
 use App\Repositories\Repository;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Collection;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class PaginationBuilder implements Responsable
 {
+    public const PER_PAGE_DEFAULT = 30;
+
     private $perPage;
     private $resource;
     private $criteria;
     private $collection;
     private $repository;
+    private $simplePaginate;
     private $defaultOrderBy;
     private $originalRepository;
 
     public function __construct()
     {
-        $this->perPage = config('pagination.per_page_default');
+        $this->perPage = static::PER_PAGE_DEFAULT;
         $this->resource = null;
         $this->criteria = collect();
         $this->repository = null;
@@ -32,8 +36,8 @@ class PaginationBuilder implements Responsable
      *
      * Pode receber uma instância de repositório ou sua respectiva classe.
      *
-     * @param  App\Repositories\Repository  $repository
-     * @return App\Builders\PaginationBuilder
+     * @param  \App\Repositories\Repository  $repository
+     * @return $this
      */
     public function repository($repository)
     {
@@ -51,8 +55,8 @@ class PaginationBuilder implements Responsable
     /**
      * Configura a classe para paginar uma Collection
      *
-     * @param  Illuminate\Support\Collection  $collection
-     * @return App\Builders\PaginationBuilder
+     * @param  \Illuminate\Support\Collection  $collection
+     * @return $this
      */
     public function collection(Collection $collection)
     {
@@ -69,12 +73,27 @@ class PaginationBuilder implements Responsable
      * Este método permite definir um único Resource para formatar
      * todos os elementos paginados.
      *
-     * @param  Illuminate\Http\Resources\Json\JsonResource  $resource
-     * @return App\Support\PaginationBuilder
+     * @param  \Illuminate\Http\Resources\Json\JsonResource  $resource
+     * @return $this
      */
     public function resource($resource)
     {
         $this->resource = $resource;
+
+        return $this;
+    }
+
+    /**
+     * Define se a paginação sera uma paginação convencional ou uma paginação simples.
+     *
+     * https://laravel.com/docs/5.8/pagination#basic-usage
+     *
+     * @param  boolean  $isSimplePagination
+     * @return self
+     */
+    public function simplePaginate($isSimplePagination = true)
+    {
+        $this->simplePaginate = $isSimplePagination;
 
         return $this;
     }
@@ -85,15 +104,15 @@ class PaginationBuilder implements Responsable
      * Este método permite definir critérios de filtro para a paginação
      * Os critérios podem ou não estar dentro de uma coleção.
      *
-     * @param  Illuminate\Support\Collection  $criterias
-     * @return App\Builders\PaginationBuilder
+     * @param  \Illuminate\Support\Collection  $criteria
+     * @return $this
      */
-    public function criterias($criterias)
+    public function criteria($criteria)
     {
-        if ($criterias instanceof Collection) {
-            $this->criteria = $this->criteria->merge($criterias);
+        if ($criteria instanceof Collection) {
+            $this->criteria = $this->criteria->merge($criteria);
         } else {
-            $this->criteria->push($criterias);
+            $this->criteria->push($criteria);
         }
 
         return $this;
@@ -102,9 +121,9 @@ class PaginationBuilder implements Responsable
     /**
      * Remove critérios de filtros
      *
-     * @return App\Builders\PaginationBuilder
+     * @return $this
      */
-    public function cleanCriterias()
+    public function cleanCriteria()
     {
         $this->criteria = collect();
         return $this;
@@ -114,7 +133,7 @@ class PaginationBuilder implements Responsable
      * Define a quantidade de ítens por página
      *
      * @param  int  $perPage
-     * @return App\Builders\PaginationBuilder
+     * @return $this
      */
     public function perPage(int $perPage)
     {
@@ -142,7 +161,7 @@ class PaginationBuilder implements Responsable
     /**
      * Constrói e retorna a paginação
      *
-     * @return Illuminate\Pagination\LengthAwarePaginator
+     * @return \Illuminate\Pagination\LengthAwarePaginator
      */
     public function build()
     {
@@ -171,30 +190,45 @@ class PaginationBuilder implements Responsable
             ->response();
     }
 
+    private function getPerPage()
+    {
+        $perPage = \Request::input('perPage', $this->perPage);
+        if ($perPage > 100 || $perPage < 1) {
+            $message = "Per page parameter [{$perPage}] out of the range.";
+            throw new UnauthorizedHttpException($message);
+        }
+
+        return $perPage;
+    }
+
     /**
      * Define critérios padrões para todas as paginações.
      *
-     * Os critérios podem ser anulados utilizando o método 'cleanCriterias'.
+     * Os critérios podem ser anulados utilizando o método 'cleanCriteria'.
      *
      * @return array
      */
-    private function getDefaultCriterias()
+    private function getDefaultCriteria()
     {
-        $defaultCriterias[] = new OrderResolvedByUrlCriteria($this->defaultOrderBy ?? []);
-        $defaultCriterias[] = new SearchResolvedByUrlCriteria();
-
-        return $defaultCriterias;
+        return [
+            new OrderResolvedByUrlCriteria($this->defaultOrderBy ?? []),
+            new SearchResolvedByUrlCriteria(),
+        ];
     }
 
     private function buildForRepository()
     {
-        $defaultCriterias = collect($this->getDefaultCriterias());
-        $criterias = $this->criteria
-            ->merge($defaultCriterias);
+        $defaultCriteria = collect($this->getDefaultCriteria());
+        $criteria = $this->criteria->merge($defaultCriteria);
+        $this->repository->pushCriteria($criteria);
 
-        $this->repository->pushCriteria($criterias);
+        $simplePaginate = $this->simplePaginate;
 
-        return $this->repository->paginate($this->perPage);
+        if ($simplePaginate) {
+            return $this->repository->simplePaginate($this->getPerPage());
+        }
+
+        return $this->repository->paginate($this->getPerPage());
     }
 
     private function buildForCollection()
@@ -217,6 +251,6 @@ class PaginationBuilder implements Responsable
             }
         }
 
-        return $this->collection->paginate($this->perPage);
+        return $this->collection->paginate($this->getPerPage());
     }
 }

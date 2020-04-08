@@ -3,9 +3,8 @@ namespace App\Repositories;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
-
-use App\Repositories\Criterias\Criteria;
-use App\Contracts\Repositories\CriteriaContract;
+use App\Repositories\Criteria\Criteria;
+use App\Repositories\Criteria\CriteriaContract;
 use App\Exceptions\Repositories\RepositoryException;
 
 abstract class Repository implements CriteriaContract
@@ -31,7 +30,7 @@ abstract class Repository implements CriteriaContract
     protected $skipCriteria = false;
 
     /**
-     * @param Collection $criterias
+     * @param Collection $criteria
      * @throws RepositoryException
      */
     public function __construct()
@@ -268,17 +267,17 @@ abstract class Repository implements CriteriaContract
     }
 
     /**
-     * @param mixed $criterias
+     * @param mixed $criteria
      * @return $this
      */
-    public function pushCriteria($criterias)
+    public function pushCriteria($criteria)
     {
-        if (is_array($criterias) || $criterias instanceof Collection) {
-            foreach ($criterias as $criteria) {
-                $this->pushCriteria($criteria);
+        if (is_array($criteria) || $criteria instanceof Collection) {
+            foreach ($criteria as $eachCriteria) {
+                $this->pushCriteria($eachCriteria);
             }
         } else {
-            $this->criteria->push($criterias);
+            $this->criteria->push($criteria);
         }
 
         return $this;

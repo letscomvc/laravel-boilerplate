@@ -7,29 +7,55 @@ use Carbon\Carbon;
 class DateHelper
 {
     /**
-    * Retorna o formato atual para o tipo 'date'.
-    *
-    * @return string
-    */
+     * Retorna o formato atual para o tipo 'date'.
+     *
+     * @return string
+     */
     public static function getDateFormat()
     {
         return __('dates.php.dateFormat');
     }
 
     /**
-    * Retorna o formato atual para o tipo 'datetime'.
-    *
-    * @return string
-    */
+     * Retorna o formato atual para o tipo 'datetime'.
+     *
+     * @return string
+     */
     public static function getDateTimeFormat()
     {
         return __('dates.php.dateTimeFormat');
     }
 
     /**
+     * Formata uma data para o formato indicado
+     *
+     * @param  Carbon|string  $date  Date to format.
+     * @param  string  $toFormat  Format.
+     * @param  string  $fromFormat  Origin format.
+     * @return string
+     */
+    public static function formatDate($date, $toFormat = null, $fromFormat = null)
+    {
+        if ($toFormat === null) {
+            $toFormat = static::getDateTimeFormat();
+        }
+
+        if ($date instanceof Carbon) {
+            return $date->format($toFormat);
+        }
+
+        $date = ((bool) $fromFormat && !empty($date))
+            ? Carbon::createFromFormat($fromFormat, $date)
+            : Carbon::parse($date);
+
+        return $date->format($toFormat);
+    }
+
+    /**
      * Dado uma data inicial e uma final, retorna todos os dias entre elas
-     * @param  Carbon $startDate Data inicial
-     * @param  Carbon $end_date   Data final
+     *
+     * @param  Carbon  $startDate  Data inicial
+     * @param  Carbon  $end_date  Data final
      * @return array
      */
     public static function generateDateRange(Carbon $startDate, Carbon $endDate)
@@ -44,7 +70,7 @@ class DateHelper
         return $dates ?? [];
     }
 
-     /**
+    /**
      * Dado um intervalo em string, converte para uma array com os devidos formatos
      *  para o banco de dados
      *

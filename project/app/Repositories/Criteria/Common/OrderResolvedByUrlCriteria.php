@@ -1,7 +1,7 @@
 <?php
-namespace App\Repositories\Criterias\Common;
+namespace App\Repositories\Criteria\Common;
 
-use App\Repositories\Criterias\Criteria;
+use App\Repositories\Criteria\Criteria;
 use App\Repositories\Repository;
 
 class OrderResolvedByUrlCriteria extends Criteria

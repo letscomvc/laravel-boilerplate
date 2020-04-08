@@ -1,5 +1,5 @@
 <?php
-namespace App\Repositories\Criterias;
+namespace App\Repositories\Criteria;
 
 use App\Repositories\Repository;
 

@@ -1,4 +1,4 @@
-<div id="flash-messages-container" v-if="!handled_flash_messages">
+<div id="flash-messages-container" v-if="!handledFlashMessages">
     @foreach (['success', 'error', 'warning', 'info'] as $flashType)
         @if(session()->has($flashType))
             @foreach(session($flashType) as $message)
