@@ -1,10 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\SingleInvokes;
-
-use Illuminate\Http\Request;
-
-use App\Http\Controllers\Controller;
+namespace App\Http\Controllers;
 
 class WelcomeController extends Controller
 {

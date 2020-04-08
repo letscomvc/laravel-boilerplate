@@ -9,7 +9,7 @@ class Upgrade extends Command
     /**
      * @var bool
      */
-    protected $routeCacheEnabled = false;
+    protected $routeCacheEnabled = true;
 
     /**
      * The name and signature of the console command.
@@ -119,7 +119,7 @@ class Upgrade extends Command
     private function cacheRoutes()
     {
         $cacheRoutesMessages = ['success' => 'Criado cache das rotas.'];
-        $this->executeWithMessages('config:cache', [], $cacheRoutesMessages);
+        $this->executeWithMessages('route:cache', [], $cacheRoutesMessages);
     }
 
     private function cacheConfig()
