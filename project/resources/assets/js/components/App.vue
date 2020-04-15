@@ -5,8 +5,10 @@
     name: 'app',
     props: ['flashMessages'],
 
-    data: {
-      handledFlashMessages: false,
+    data() {
+      return {
+        handledFlashMessages: false,
+      }
     },
 
     mounted() {
@@ -48,17 +50,17 @@
           return Promise.reject(error);
         }
 
-        if (error.response.status == 401 || error.response.status == 419) {
+        if (error.response.status === 401 || error.response.status == 419) {
           this._showExpiredSessionMessageAndRedirect();
           return Promise.reject(error);
         }
 
-        if (error.response.status == 403) {
+        if (error.response.status === 403) {
           this.throwFlashMessage('error', 'Permissão negada');
           return Promise.reject(error);
         }
 
-        if (error.response.status == 500) {
+        if (error.response.status === 500) {
           this.throwFlashMessage('error', 'Falha interna do servidor');
           return Promise.reject(error);
         }

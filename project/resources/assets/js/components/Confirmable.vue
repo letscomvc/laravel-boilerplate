@@ -7,72 +7,112 @@ To use:
         </button>
     </confirmable>
 -->
-
 <template>
-    <div>
-        <slot :confirm="confirm">
-            Componente vazio
-        </slot>
-    </div>
+  <div>
+    <slot :confirm="confirm">
+    </slot>
+  </div>
 </template>
 
 <script>
 export default {
-    name: "confirmable",
+  name: "confirmable",
 
-    props: {
-        title: {
-            type: String,
-            required: false,
-            default () {
-                return 'Confirmação';
-            },
-        },
-        message: {
-            type: String,
-            required: false,
-            default () {
-                return '';
-            },
-        },
+  props: {
+    title: {
+      type: String,
+      required: false,
+      default () {
+        return 'Confirmação';
+      },
+    },
+    message: {
+      type: String,
+      required: false,
+      default () {
+        return '';
+      },
     },
 
-    data: () => {
-        return {
-            confirmed: false,
-        }
+    type: {
+      type: String,
+      default: () =>{
+        return 'confirm';
+      }
     },
 
-    methods: {
-        confirm(event) {
-            if (this.confirmed) {
-                this.confirmed = false;
-                return;
-            } else {
-                event.preventDefault();
+    timeout: {
+      type: Number,
+      default: () =>{
+        return 5000;
+      }
+    }
+  },
+
+  data: () => {
+    return {
+      confirmed: false,
+    }
+  },
+
+  methods: {
+    confirm(event, callbackOnYes, callbackOnNo) {
+      if (this.confirmed) {
+        this.confirmed = false;
+        return;
+      } else {
+        event.preventDefault();
+      }
+
+      const vm = this;
+      const type = this.validateSnotifyType();
+
+      this.$snotify[type](this.message, this.title, {
+        timeout: this.timeout,
+        showProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        buttons: [
+          {
+            text: 'Sim',
+            action: (toast) => {
+              this.confirmed = true;
+              event.target.click();
+              vm.$snotify.remove(toast.id);
+              if (callbackOnYes) {
+                callbackOnYes();
+              }
             }
-
-            this.$snotify.confirm(this.message, this.title, {
-                timeout: 5000,
-                showProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: false,
-                buttons: [{
-                        text: 'Sim',
-                        action: () => {
-                            this.confirmed = true;
-                            event.target.click();
-                        }
-                    },
-                    {
-                        text: 'Não',
-                        action: () => {
-                            this.confirmed = false;
-                        }
-                    },
-                ],
-            });
-        }
+          },
+          {
+            text: 'Não',
+            action: (toast) => {
+              this.confirmed = false;
+              vm.$snotify.remove(toast.id);
+              if (callbackOnNo) {
+                callbackOnNo();
+              }
+            }
+          },
+        ],
+      });
     },
+
+    validateSnotifyType() {
+      const validTypes = [
+        'simple',
+        'success',
+        'info',
+        'warning',
+        'error',
+        'async',
+        'confirm',
+        'prompt',
+      ];
+
+      return (_.indexOf(validTypes, this.type) == -1) ? 'confirm' : this.type;
+    }
+  },
 }
 </script>
+
