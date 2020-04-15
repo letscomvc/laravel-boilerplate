@@ -21,14 +21,13 @@ mix.js('resources/assets/js/app.js', 'public/assets/js')
 
 // Third party libraries in vendor.js
 mix.extract([
-    'vue',
     'axios',
-    'lodash',
-    'jquery',
-    'popper.js',
     'bootstrap',
+    'jquery',
+    'lodash',
+    'popper.js',
+    'vue',
     'vue-snotify',
-    'jquery-mask-plugin',
 ]);
 
 // Versioning assets when production
