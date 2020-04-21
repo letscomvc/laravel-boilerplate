@@ -12,8 +12,9 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Styles -->
-    <link href="{{ mix('assets/css/app.css') }}" rel="stylesheet">
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"> @yield('header')
+    <link href="{{ mix('css/app.css') }}" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    @yield('header')
 </head>
 
 <body>
@@ -60,18 +61,16 @@
 
         <vue-snotify></vue-snotify>
 
-        @yield('custom-template')
-
         <div class="container pt-3">
             @include('layouts.breadcrumb')
-            @yield('content')
+            @inertia
         </div>
     </div>
 
     <!-- Scripts -->
-    <script src="{{ mix('assets/js/manifest.js') }}"></script>
-    <script src="{{ mix('assets/js/vendor.js') }}"></script>
-    <script src="{{ mix('assets/js/app.js') }}"></script>
+    <script src="{{ mix('js/manifest.js') }}"></script>
+    <script src="{{ mix('js/vendor.js') }}"></script>
+    <script src="{{ mix('js/app.js') }}"></script>
 
     @yield('footer')
 </body>

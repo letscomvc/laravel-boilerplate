@@ -1,4 +1,18 @@
 let mix = require('laravel-mix');
+let path = require('path');
+
+mix.webpackConfig({
+  output: {
+    chunkFilename: 'js/[name].js?id=[chunkhash]'
+  },
+  resolve: {
+    alias: {
+      'vue$': 'vue/dist/vue.runtime.esm.js',
+      '@': path.resolve(__dirname, './resources/assets/js'),
+    },
+    extensions: ['*', '.js', '.vue', '.json'],
+  },
+})
 
 /*
  |--------------------------------------------------------------------------
@@ -12,25 +26,10 @@ let mix = require('laravel-mix');
  */
 
 //Copy images and fonts from 'resources/' to 'public/'
-mix.copyDirectory('resources/assets/img', 'public/assets/img');
-mix.copyDirectory('resources/assets/fonts', 'public/assets/fonts');
+mix.copyDirectory('resources/assets/img', 'public/img');
+mix.copyDirectory('resources/assets/fonts', 'public/fonts');
 
 //Compiling assets
-mix.js('resources/assets/js/app.js', 'public/assets/js')
-   .sass('resources/assets/sass/app.scss', 'public/assets/css');
-
-// Third party libraries in vendor.js
-mix.extract([
-    'axios',
-    'bootstrap',
-    'jquery',
-    'lodash',
-    'popper.js',
-    'vue',
-    'vue-snotify',
-]);
-
-// Versioning assets when production
-if (mix.inProduction()) {
-  mix.version();
-}
+mix.js('resources/assets/js/app.js', 'public/js')
+  .sass('resources/assets/sass/app.scss', 'public/css')
+  .version()
