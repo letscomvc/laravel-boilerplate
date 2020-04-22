@@ -21,9 +21,12 @@
         'user' => [
             'success' => [
                 'destroy' => 'Usuário apagado com sucesso.',
+                'update' => 'Usuário editado com sucesso.',
+                'create' => 'Cadastro realizado com sucesso.',
             ],
             'error' => [
                 'destroy' => 'Falha ao apagar usuário.',
+                'update' => 'Erro ao editar este usuário.',
             ],
         ]
 

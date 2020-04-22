@@ -2,7 +2,6 @@
   export default {
     el: '#app',
 
-    name: 'app',
     props: ['flashMessages'],
 
     data() {
