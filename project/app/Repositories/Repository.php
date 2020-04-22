@@ -15,7 +15,7 @@ abstract class Repository implements CriteriaContract
     protected $model;
 
     /**
-     * @var class
+     * @var string
      */
     protected $class;
 
