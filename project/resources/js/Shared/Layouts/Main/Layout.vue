@@ -1,13 +1,21 @@
 <template>
     <div>
-        Default layout
-        <slot />
+        <navbar></navbar>
+        <div class="container">
+            <slot/>
+        </div>
     </div>
 </template>
 
 <script>
+  import Navbar from "./Navbar";
+
   export default {
-    name: "main",
+    name: 'layout',
+
+    components: {
+      Navbar,
+    },
 
     methods: {
       url() {

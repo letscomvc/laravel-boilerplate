@@ -1,7 +1,8 @@
 <template>
-    <layout title="Welcome">
-        <h1>Welcome</h1>
-        <p>Hello {{ user.name }}, welcome to your first Inertia app!</p>
+    <layout>
+        <div class="title p-5 text-center display-2">
+            Let's Sistemas
+        </div>
     </layout>
 </template>
 
@@ -10,7 +11,7 @@
 
   export default {
     components: {
-      'layout': Layout,
+      Layout,
     }
   }
 </script>

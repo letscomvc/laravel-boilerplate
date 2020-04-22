@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <layout>
         <div class="row justify-content-md-center mt-5">
             <div class="col-md-8">
                 <div class="card">
@@ -17,12 +17,6 @@
                                             name="email"
                                             v-model="form.email"
                                     >
-
-<!--                                    @if ($errors->has('email'))-->
-<!--                                    <div class="invalid-feedback">-->
-<!--                                        <strong>{{ $errors->first('email') }}</strong>-->
-<!--                                    </div>-->
-<!--                                    @endif-->
                                 </div>
                             </div>
 
@@ -38,12 +32,6 @@
                                             v-model="form.password"
                                             required
                                     >
-
-                                    <!--                                    @if ($errors->has('password'))-->
-                                    <!--                                    <div class="invalid-feedback">-->
-                                    <!--                                        <strong>{{ $errors->first('password') }}</strong>-->
-                                    <!--                                    </div>-->
-                                    <!--                                    @endif-->
                                 </div>
                             </div>
 
@@ -53,6 +41,7 @@
                                         <label class="form-check-label">
                                             <input type="checkbox" class="form-check-input" name="remember"
                                                    v-model="form.remember">
+                                            Remember Me
                                         </label>
                                     </div>
                                 </div>
@@ -64,9 +53,9 @@
                                         Login
                                     </button>
 
-                                    <!--                                    <a class="btn btn-link" href="">-->
-                                    <!--                                        Forgot Your Password?-->
-                                    <!--                                    </a>-->
+                                    <inertia-link class="btn btn-link" :href="route('password.request')">
+                                        Forgot Your Password?
+                                    </inertia-link>
                                 </div>
                             </div>
                         </form>
@@ -74,12 +63,18 @@
                 </div>
             </div>
         </div>
-    </div>
+    </layout>
 </template>
 
 <script>
+  import Layout from '@/Shared/Layouts/Main/Layout';
+
   export default {
     name: "Login",
+
+    components: {
+      Layout,
+    },
 
     data() {
       return {

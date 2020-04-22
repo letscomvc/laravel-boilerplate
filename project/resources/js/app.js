@@ -1,20 +1,23 @@
 import Vue from 'vue';
-import Snotify, { SnotifyPosition } from 'vue-snotify';
-import { InertiaApp } from '@inertiajs/inertia-vue'
+import Snotify, {SnotifyPosition} from 'vue-snotify';
+import {InertiaApp} from '@inertiajs/inertia-vue'
 
 require('./bootstrap');
-require('./support');
 
-const snotifyOptions = {
+Vue.use(InertiaApp);
+Vue.use(Snotify, {
   toast: {
     timeout: 3000,
     showProgressBar: false,
     position: SnotifyPosition.rightTop
   }
-};
+});
 
-Vue.use(InertiaApp);
-Vue.use(Snotify, snotifyOptions);
+Vue.mixin({
+  methods: {
+    route: (name, params, absolute) => route(name, params, absolute).url(),
+  }
+});
 
 const app = document.getElementById('app')
 new Vue({

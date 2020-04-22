@@ -163,7 +163,6 @@ return [
         App\Providers\HorizonServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\HelperServiceProvider::class,
-        App\Providers\BladeDirectivesServiceProvider::class,
         App\Providers\CollectionMacrosServiceProvider::class,
 
     ],

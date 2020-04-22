@@ -256,40 +256,6 @@ if (!function_exists('stress')) {
     }
 }
 
-if (!function_exists('cached_include')) {
-    /**
-     * Mimics the blade include function but caches the rendered for $time
-     * minutes in key 'cache:partials:<view_name>:<context>_<$cache_key>'
-     * in order to avoid conflicts and to be able to flush the view using
-     * patterns.
-     *     Ex: Cache::clear('cache:partials:myview_*');
-     *
-     * @param  string  $view  The name of the view that are going to be included.
-     * @param  array  $vars  Variables that are being passed to the view.
-     * @param  integer  $time  The amount of minutes that the result of the view is going to be stored.
-     *
-     * @return string             Html code of the included view
-     */
-    function cached_include($view, $vars = null, $time = 60)
-    {
-        $renderedView = function () use ($view, $vars) {
-            return view(
-                $view,
-                is_array($vars)
-                    ? $vars
-                    : array_except(get_defined_vars(), ['__data', '__path'])
-            )->render();
-        };
-
-        if (config('cache.enable_application_cache')) {
-            $cacheKey = $view.':'.md5(serialize($vars));
-            return \Cache::remember($cacheKey, $time, $renderedView);
-        }
-
-        return $renderedView();
-    }
-}
-
 if (!function_exists('strbool')) {
     /**
      * Retorna a string de um valor booleano.
