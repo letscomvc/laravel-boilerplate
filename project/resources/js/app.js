@@ -13,8 +13,8 @@ const snotifyOptions = {
   }
 };
 
-Vue.use(Snotify, snotifyOptions);
 Vue.use(InertiaApp);
+Vue.use(Snotify, snotifyOptions);
 
 const app = document.getElementById('app')
 new Vue({

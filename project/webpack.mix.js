@@ -1,5 +1,5 @@
-let mix = require('laravel-mix');
 let path = require('path');
+let mix = require('laravel-mix');
 
 mix.webpackConfig({
   output: {
@@ -8,7 +8,7 @@ mix.webpackConfig({
   resolve: {
     alias: {
       'vue$': 'vue/dist/vue.runtime.esm.js',
-      '@': path.resolve(__dirname, './resources/assets/js'),
+      '@': path.resolve(__dirname, './resources/js'),
     },
     extensions: ['*', '.js', '.vue', '.json'],
   },
@@ -26,10 +26,9 @@ mix.webpackConfig({
  */
 
 //Copy images and fonts from 'resources/' to 'public/'
-mix.copyDirectory('resources/assets/img', 'public/img');
-mix.copyDirectory('resources/assets/fonts', 'public/fonts');
+mix.copyDirectory('resources/img', 'public/img');
 
 //Compiling assets
-mix.js('resources/assets/js/app.js', 'public/js')
-  .sass('resources/assets/sass/app.scss', 'public/css')
+mix.js('resources/js/app.js', 'public/js')
+  .sass('resources/sass/app.scss', 'public/css')
   .version()
