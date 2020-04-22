@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Repositories\UserRepository;
 use App\Http\Requests\UserRequest;
 use App\Http\Resources\User as UserResource;
+use App\Models\User;
+use App\Repositories\UserRepository;
 
 class UserController extends Controller
 {
@@ -18,50 +19,47 @@ class UserController extends Controller
         return view('users.create');
     }
 
-    public function store(UserRequest $request, UserRepository $userRepository)
+    public function store(UserRequest $request)
     {
-        $data = $request->all();
-        $userRepository->create($data);
+        (new UserRepository)->create($request->validated());
 
         $message = _m('user.success.create');
         return $this->chooseReturn('success', $message, 'users.index');
     }
 
-    public function edit(UserRepository $userRepository, $id)
+    public function edit(User $user)
     {
-        $user = $userRepository->find($id);
         return view('users.edit', compact('user'));
     }
 
-    public function update(UserRequest $request, UserRepository $userRepository, $id)
+    public function update(UserRequest $request, User $user)
     {
-        $data = $request->all();
-        $userRepository->update($id, $data);
+        (new UserRepository())->update($user, $request->validated());
 
         $message = _m('user.success.update');
         return $this->chooseReturn('success', $message, 'users.index');
     }
 
-    public function show(UserRepository $userRepository, $id)
+    public function show(User $user)
     {
-        $user = $userRepository->find($id);
-
         return view('users.show', compact('user'));
     }
 
-    public function destroy(UserRepository $userRepository, $id)
+    public function destroy(User $user)
     {
         try {
-            $userRepository->delete($id);
+            (new UserRepository)->delete($user);
             return $this->chooseReturn('success', _m('user.success.destroy'));
-        } catch (\Exception $e) {
+        } catch (\Exception $exception) {
+            report($exception);
             return $this->chooseReturn('error', _m('user.error.destroy'));
         }
     }
 
-    protected function getPagination($pagination)
+    public function pagination()
     {
-        $pagination->repository(UserRepository::class)
-                   ->resource(UserResource::class);
+        return pagination()
+            ->repository(UserRepository::class)
+            ->resource(UserResource::class);
     }
 }

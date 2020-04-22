@@ -2,52 +2,31 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Foundation\Bus\DispatchesJobs;
-use Illuminate\Routing\Controller as BaseController;
-use Illuminate\Foundation\Validation\ValidatesRequests;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use App\Support\ChooseReturn;
-use App\Support\PaginationBuilder;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Routing\Controller as BaseController;
 
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
     /**
-     * Retorna a paginação completa.
-     *
-     *  Cria o construtor de paginação, delega a configuração para o hook 'getPagination'
-     * e retorna a paginação construída.
-     *
-     * @return Pagination
-     */
-    public function pagination()
-    {
-        $pagination = new PaginationBuilder();
-        $this->getPagination($pagination);
-        return $pagination->build();
-    }
-
-    /**
-     * Configura a paginação.
-     *
-     * @param \App\Support\PaginationBuilder $pagination
-     * @return void
-     */
-    protected function getPagination($pagination)
-    {
-    }
-
-    /**
      * Escolhe a forma correta de retorno (XHR ou Redirect).
      *
-     * @param string $type Tipo do retorno ('error', 'success', 'info', 'warning')
-     * @param string $message Mensagem de retorno.
-     * @param string $route_to_redirect Rota para redirecionamento caso não seja XHR.
+     * @param  string  $type  Tipo do retorno ('error', 'success', 'info', 'warning')
+     * @param  string  $message  Mensagem de retorno.
+     * @param  string|null  $route  Rota para redirecionamento caso não seja XHR.
+     * @param  string|null  $routeArguments Argumentos para construção da rota.
      * @return mixed JSON ou Redirect;
      */
-    public function chooseReturn($type, $message, $route_to_redirect = null, $id = null)
-    {
-        return ChooseReturn::choose($type, $message, $route_to_redirect, $id);
+    public function chooseReturn(
+        string $type,
+        string $message,
+        ?string $route = null,
+        $routeArguments = null
+    ) {
+        return ChooseReturn::choose($type, $message, $route, $routeArguments);
     }
 }
