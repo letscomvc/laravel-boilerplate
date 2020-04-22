@@ -1,5 +1,5 @@
 /* Data list filters */
-require('./filters');
+require('./DataListFilters');
 
 /* Data lists */
 Vue.component('data-list', require('./DataList.vue').default);

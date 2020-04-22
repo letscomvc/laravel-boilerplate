@@ -36,7 +36,7 @@ class PaginationBuilder implements Responsable
      *
      * Pode receber uma instância de repositório ou sua respectiva classe.
      *
-     * @param  \App\Repositories\Repository  $repository
+     * @param  \App\Repositories\Repository|string  $repository
      * @return $this
      */
     public function repository($repository)
@@ -73,7 +73,7 @@ class PaginationBuilder implements Responsable
      * Este método permite definir um único Resource para formatar
      * todos os elementos paginados.
      *
-     * @param  \Illuminate\Http\Resources\Json\JsonResource  $resource
+     * @param  \Illuminate\Http\Resources\Json\JsonResource|string  $resource
      * @return $this
      */
     public function resource($resource)

@@ -26,11 +26,11 @@ class UserRequest extends FormRequest
         $rules = [
             'name' => 'required|max:255',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|confirmed',
+            'password' => 'required|confirmed|string|min:8',
         ];
 
         if (in_array($this->method(), ['PUT', 'PATCH'])) {
-            $rules['email'] .= ",{$this->user}";
+            $rules['email'] .= ",{$this->user->id}";
         }
 
         return $rules;
