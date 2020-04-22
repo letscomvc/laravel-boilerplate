@@ -4,6 +4,7 @@
             <inertia-link class="navbar-brand" href="/">
                 Base Laravel-Inertia
             </inertia-link>
+            
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -30,13 +31,9 @@
                                 {{ $page.auth.user.name }}
                             </a>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-                                <a href="/" class="dropdown-item"
-                                   onclick="event.preventDefault();document.getElementById('logout-form').submit();">
+                                <a @click.prevent="logout" href="#" class="dropdown-item">
                                     Logout
                                 </a>
-
-                                <form id="logout-form" :action="route('logout')" method="POST" style="display: none;">
-                                </form>
                             </div>
                         </li>
                     </template>
@@ -49,5 +46,12 @@
 <script>
   export default {
     name: "Navbar",
+
+    methods: {
+      logout() {
+        this.$inertia
+          .post(this.route('logout'));
+      },
+    },
   }
 </script>
