@@ -1,82 +1,63 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <div class="row justify-content-md-center mt-5">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">Login</div>
-                <div class="card-body">
-                    <form class="form-horizontal" method="POST" action="{{ route('login') }}">
-                        {{ csrf_field() }}
+<div class="container mx-auto">
+        <div class="flex flex-wrap justify-center">
+            <div class="w-full max-w-sm">
+                <div class="flex flex-col break-words bg-white border border-2 rounded shadow-md">
 
-                        <div class="form-group row">
-                            <label for="email" class="col-lg-4 col-form-label text-lg-right">E-Mail Address</label>
+                    <div class="font-semibold bg-gray-200 text-gray-700 py-3 px-6 mb-0">
+                        Login
+                    </div>
 
-                            <div class="col-lg-6">
-                                <input
-                                        id="email"
-                                        type="email"
-                                        class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}"
-                                        name="email"
-                                        value="{{ old('email') }}"
-                                        required
-                                        autofocus
-                                >
+                    <form class="w-full p-6" method="POST" action="{{ route('login') }}">
+                        @csrf
 
-                                @if ($errors->has('email'))
-                                    <div class="invalid-feedback">
-                                        <strong>{{ $errors->first('email') }}</strong>
-                                    </div>
-                                @endif
-                            </div>
+                        <div class="flex flex-wrap mb-6">
+                            <label for="email" class="block text-gray-700 text-sm font-bold mb-2">
+                                E-Mail Address:
+                            </label>
+
+                            <input id="email" type="email" class="form-input w-full @error('email') border-red-500 @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
+
+                            @errorblock('email')
                         </div>
 
-                        <div class="form-group row">
-                            <label for="password" class="col-lg-4 col-form-label text-lg-right">Password</label>
+                        <div class="flex flex-wrap mb-6">
+                            <label for="password" class="block text-gray-700 text-sm font-bold mb-2">
+                                Password:
+                            </label>
 
-                            <div class="col-lg-6">
-                                <input
-                                        id="password"
-                                        type="password"
-                                        class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}"
-                                        name="password"
-                                        required
-                                >
+                            <input id="password" type="password" class="form-input w-full @error('password') border-red-500 @enderror" name="password" required>
 
-                                @if ($errors->has('password'))
-                                    <div class="invalid-feedback">
-                                        <strong>{{ $errors->first('password') }}</strong>
-                                    </div>
-                                @endif
-                            </div>
+                            @errorblock('password')
                         </div>
 
-                        <div class="form-group row">
-                            <div class="col-lg-6 offset-lg-4">
-                                <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input type="checkbox" class="form-check-input" name="remember" {{ old('remember') ? 'checked' : '' }}> Remember Me
-                                    </label>
-                                </div>
-                            </div>
+                        <div class="flex mb-6">
+                            <label class="inline-flex items-center text-sm text-gray-700" for="remember">
+                                <input type="checkbox" name="remember" id="remember" class="form-checkbox" {{ old('remember') ? 'checked' : '' }}>
+                                <span class="ml-2">Remember me</span>
+                            </label>
                         </div>
 
-                        <div class="form-group row">
-                            <div class="col-lg-8 offset-lg-4">
-                                <button type="submit" class="btn btn-primary">
-                                    Login
-                                </button>
+                        <div class="flex flex-wrap items-center">
+                            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-gray-100 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                Login
+                            </button>
 
-                                <a class="btn btn-link" href="{{ route('password.request') }}">
-                                    Forgot Your Password?
-                                </a>
-                            </div>
+                            @if (Route::has('register'))
+                                <p class="w-full text-xs text-center text-gray-700 mt-8 -mb-4">
+                                    Don't have an account?
+                                    <a class="text-blue-500 hover:text-blue-700 no-underline" href="{{ route('register') }}">
+                                        Register
+                                    </a>
+                                </p>
+                            @endif
                         </div>
                     </form>
+
                 </div>
             </div>
         </div>
     </div>
-</div>
 @endsection

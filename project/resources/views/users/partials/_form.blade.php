@@ -1,24 +1,28 @@
 @csrf
 
-<div class="form-group">
-  <label for="userName">Nome</label>
-  <input type="name" name="name" class="form-control {{ with_error('name', 'has-danger') }}" id="userName" placeholder="Nome do usuário" value="{{old('name') ?? $user->name ?? ''}}">
-  @errorblock('name')
+<div class="flex flex-wrap mb-6">
+    <label for="userName" class="block text-gray-700 text-sm font-bold mb-2">Nome</label>
+    <input type="text" name="name" class="form-input w-full @error('name') border-red-500 @enderror"
+           id="userName" placeholder="Nome do usuário" value="{{old('name') ?? $user->name ?? ''}}">
+    @errorblock('name')
 </div>
 
-<div class="form-group">
-  <label for="userEmail">Email</label>
-  <input type="email" name="email" class="form-control {{ with_error('name', 'has-danger') }}" id="userEmail" placeholder="Digite o email" value="{{old('email') ?? $user->email ?? ''}}">
-  @errorblock('email')
+<div class="flex flex-wrap mb-6">
+    <label for="userEmail" class="block text-gray-700 text-sm font-bold mb-2">Email</label>
+    <input type="email" name="email" class="form-input w-full @error('email') border-red-500 @enderror"
+           id="userEmail" placeholder="Email do usuário" value="{{old('email') ?? $user->email ?? ''}}">
+    @errorblock('email')
 </div>
 
-<div class="form-group">
-  <label for="userPassword">Senha</label>
-  <input type="password" name="password" class="form-control {{ with_error('name', 'has-danger') }}" id="userPassword" placeholder="Senha">
-  @errorblock('password')
+<div class="flex flex-wrap mb-6">
+    <label for="userPassword" class="block text-gray-700 text-sm font-bold mb-2">Senha</label>
+    <input type="password" name="password" class="form-input w-full @error('password') border-red-500 @enderror"
+           id="userPassword" placeholder="Senha">
+    @errorblock('password')
 </div>
 
-<div class="form-group">
-  <label for="confirmPassword">Confirmar senha</label>
-  <input type="password" name="password_confirmation" class="form-control" id="confirmPassword" placeholder="Confirmar senha">
+<div class="flex flex-wrap mb-6">
+    <label for="confirmPassword" class="block text-gray-700 text-sm font-bold mb-2">Confirmar senha</label>
+    <input type="password" name="password_confirmation" class="form-input w-full @error('password_confirmation') border-red-500 @enderror"
+           id="confirmPassword" placeholder="Confirmar senha">
 </div>

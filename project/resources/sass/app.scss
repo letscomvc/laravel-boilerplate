@@ -1,14 +1,5 @@
-// Fonts
-@import url("https://fonts.googleapis.com/css?family=Raleway:300,400,600");
+@import "~tailwindcss/base";
+@import "~tailwindcss/components";
+@import "~tailwindcss/utilities";
 
-// Variables
-@import "variables";
-
-// Bootstrap
-@import "../../node_modules/bootstrap/scss/bootstrap";
-
-// Snotify
 @import "snotify/snotify-material";
-
-//App customizations
-@import "custom";

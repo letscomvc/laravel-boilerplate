@@ -1,20 +1,29 @@
+<template>
+    <div>
+        <slot name="options">
+        </slot>
+
+        <table class="w-full">
+            <thead>
+                <slot name="header" :orderBy="orderBy"></slot>
+            </thead>
+            <tbody>
+                <slot name="body" :items="items"></slot>
+            </tbody>
+        </table>
+
+        <slot name="footer"></slot>
+    </div>
+</template>
+
 <script>
   import SortIcon from '../support/SortIcon.js';
 
   export default {
-    template: '#data-list',
-
     props: {
       dataSource: {
         type: String,
       },
-    },
-
-    watch: {
-      query: _.debounce(function (text) {
-        this.currentPage = 1;
-        this.fetchData();
-      }, 300),
     },
 
     computed: {
@@ -29,18 +38,17 @@
       },
 
       fetchUrl() {
-        let query_params = '';
-        query_params = '?query=' + this.query;
-        query_params += '&field=' + this.field;
-        query_params += '&order=' + this.sortIcon.order;
+        let queryParams = '';
+        queryParams += '?field=' + this.field;
+        queryParams += '&order=' + this.sortIcon.order;
 
         if (this.currentPage != 1) {
-          query_params += '&page=' + this.currentPage;
+          queryParams += '&page=' + this.currentPage;
         }
 
-        query_params += this.queryFilters;
+        queryParams += this.queryFilters;
 
-        const url = this.dataSource + query_params;
+        const url = this.dataSource + queryParams;
         return encodeURI(url);
       },
 
@@ -71,7 +79,6 @@
 
         loading: true,
 
-        query: '',
         field: '',
 
         sortIcon: new SortIcon,
@@ -117,9 +124,6 @@
           this.setPagination(response.data.meta);
           this.definePaginationButtons();
           this.$emit('stop-loading');
-          this.$nextTick().then(function () {
-            $('[data-toggle="popover"]').popover();
-          });
         });
       },
 

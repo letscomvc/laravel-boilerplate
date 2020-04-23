@@ -1,5 +1,5 @@
-@if ($errors->has($field))
-    <span class="error-block">
-        <span>{{ $errors->first($field) }}</span>
-    </span>
-@endif
+@error($field)
+<p class="text-red-500 text-xs mt-1">
+    {{ $message }}
+</p>
+@enderror

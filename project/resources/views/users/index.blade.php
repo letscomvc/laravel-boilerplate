@@ -13,42 +13,40 @@
 @endsection
 
 @section('content')
-<div class="row mt-3">
-    <div class="col-md-12">
-        <data-list data-source="{{ route('pagination.users') }}">
-        </data-list>
-   </div>
-</div>
-@endsection
+    <data-list data-source="{{ route('pagination.users') }}">
+        <template #options>
+            <div class="flex mb-5">
+                <div class="w-10/12">
+                    <filter-text url-key="query"
+                                 class="form-input w-full"
+                                 aria-placeholder="Buscar...">
+                    </filter-text>
+                </div>
 
-@section('custom-template')
-    <template id="data-list" slot-scope="modelScope">
-        <div>
-            <div class="row my-2">
-                <div class="col-md-6">
+                <div class="w-2/12">
                     <a :href="'{{ route('users.create') }}'">
-                        <button class="btn btn-primary">Novo usuário</button>
+                        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                            Novo usuário
+                        </button>
                     </a>
                 </div>
-                <div class="col-md-6">
-                    <input type="text" v-model="query" class="form-control"
-                        placeholder="Buscar ..." >
-                </div>
             </div>
-            <table class="table">
-                <thead>
-                    <tr>
-                        @include('users.partials._head')
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="(item, index) in items" :key="index">
-                        @include('users.partials._body')
-                        <td>@include('shared.partials._buttons_actions')</td>
-                    </tr>
-                </tbody>
-            </table>
+        </template>
+
+        <template #header="{orderBy}">
+            <tr class="text-left">
+                @include('users.partials._head')
+            </tr>
+        </template>
+
+        <template #body="{items}">
+            <tr v-for="(item, index) in items" :key="index">
+                @include('users.partials._body')
+            </tr>
+        </template>
+
+        <template #footer="dataList" class="text-center">
             @include('shared.partials._pagination')
-        </div>
-    </template>
+        </template>
+    </data-list>
 @endsection

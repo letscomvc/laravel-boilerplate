@@ -1,11 +1,12 @@
 <template>
-    <li v-if="active" class="breadcrumb-item active">
-        <slot>Breadcrumb Item</slot>
+    <li v-if="active" class="flex items-center active text-gray-600">
+        <slot>Link</slot>
     </li>
-    <li v-else class="breadcrumb-item">
-        <a :href="href">
-            <slot>Breadcrumb Item</slot>
+    <li v-else class="flex items-center text-gray-700">
+        <a class="cursor-pointer" :href="href">
+            <slot>Link</slot>
         </a>
+        <span class="mx-1">/</span>
     </li>
 </template>
 
