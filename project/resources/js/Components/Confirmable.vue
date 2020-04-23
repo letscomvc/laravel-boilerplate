@@ -8,7 +8,7 @@ To use:
     </confirmable>
 -->
 <template>
-  <div>
+  <div class="inline">
     <slot :confirm="confirm">
     </slot>
   </div>

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="inline">
     <slot :handleDelete="handleDelete">
     </slot>
   </div>

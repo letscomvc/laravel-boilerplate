@@ -12,15 +12,17 @@
             </tbody>
         </table>
 
-        <slot name="footer"></slot>
+        <pagination class="w-10/12" :pagination-buttons="paginationButtons"></pagination>
     </div>
 </template>
 
 <script>
   import SortIcon from '../support/SortIcon.js';
+  import Pagination from "./Pagination";
 
   export default {
-    props: {
+      components: {Pagination},
+      props: {
       dataSource: {
         type: String,
       },
