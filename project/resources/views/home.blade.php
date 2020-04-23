@@ -13,8 +13,9 @@
                             {{ session('status') }}
                         </div>
                     @endif
-
+                    <p class="bg-red-400">
                     You are logged in!
+                    </p>
                 </div>
             </div>
         </div>

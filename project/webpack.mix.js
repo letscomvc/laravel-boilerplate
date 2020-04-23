@@ -1,4 +1,7 @@
 let mix = require('laravel-mix');
+const tailwindcss = require('tailwindcss');
+
+require('laravel-mix-purgecss');
 
 /*
  |--------------------------------------------------------------------------
@@ -14,8 +17,17 @@ let mix = require('laravel-mix');
 //Copy images and fonts from 'resources/' to 'public/'
 mix.copyDirectory('resources/img', 'public/img');
 
-//Compiling assets
+// Compiling Js
 mix.js('resources/js/app.js', 'public/js')
-  .sass('resources/sass/app.scss', 'public/css')
   .extract()
   .version();
+
+// Compiling Sass
+mix.sass('resources/sass/app.scss', 'public/css')
+  .options({
+    processCssUrls: false,
+    postCss: [tailwindcss('tailwind.config.js')],
+  })
+  .purgeCss({
+    enabled: (process.env.NODE_ENV === 'production') ? true : false,
+  });

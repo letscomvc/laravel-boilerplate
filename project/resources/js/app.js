@@ -1,8 +1,6 @@
-require('./bootstrap');
+import Snotify, {SnotifyPosition} from 'vue-snotify';
 
 window.Vue = require('vue');
-
-import Snotify, { SnotifyPosition } from 'vue-snotify';
 
 Vue.use(Snotify, {
   toast: {
