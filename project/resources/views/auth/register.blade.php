@@ -1,101 +1,82 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <div class="row justify-content-md-center mt-5">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">Register</div>
-                <div class="card-body">
-                    <form role="form" method="POST" action="{{ url('/register') }}">
-                        {!! csrf_field() !!}
+    <div class="container mx-auto">
+        <div class="flex flex-wrap justify-center">
+            <div class="w-full max-w-sm">
+                <div class="flex flex-col break-words bg-white border border-2 rounded shadow-md">
 
-                        <div class="form-group row">
-                            <label class="col-lg-4 col-form-label text-lg-right">Name</label>
+                    <div class="font-semibold bg-gray-200 text-gray-700 py-3 px-6 mb-0">
+                        Register
+                    </div>
 
-                            <div class="col-lg-6">
-                                <input
-                                        type="text"
-                                        class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}"
-                                        name="name"
-                                        value="{{ old('name') }}"
-                                        required
-                                >
-                                @if ($errors->has('name'))
-                                    <div class="invalid-feedback">
-                                        <strong>{{ $errors->first('name') }}</strong>
-                                    </div>
-                                @endif
-                            </div>
+                    <form class="w-full p-6" method="POST" action="{{ route('register') }}">
+                        @csrf
+
+                        <div class="flex flex-wrap mb-6">
+                            <label for="name" class="block text-gray-700 text-sm font-bold mb-2">
+                                Name:
+                            </label>
+
+                            <input id="name" type="text"
+                                   class="form-input w-full @error('name')  border-red-500 @enderror" name="name"
+                                   value="{{ old('name') }}" required autocomplete="name" autofocus>
+
+                            @errorblock('name')
                         </div>
 
-                        <div class="form-group row">
-                            <label class="col-lg-4 col-form-label text-lg-right">E-Mail Address</label>
+                        <div class="flex flex-wrap mb-6">
+                            <label for="email" class="block text-gray-700 text-sm font-bold mb-2">
+                                {{ __('E-Mail Address') }}:
+                            </label>
 
-                            <div class="col-lg-6">
-                                <input
-                                        type="email"
-                                        class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}"
-                                        name="email"
-                                        value="{{ old('email') }}"
-                                        required
-                                >
+                            <input id="email"
+                                   type="email"
+                                   name="email"
+                                   class="form-input w-full @error('email') border-red-500 @enderror"
+                                   value="{{ old('email') }}" required autocomplete="email">
 
-                                @if ($errors->has('email'))
-                                    <div class="invalid-feedback">
-                                        <strong>{{ $errors->first('email') }}</strong>
-                                    </div>
-                                @endif
-                            </div>
+                            @errorblock('email')
                         </div>
 
-                        <div class="form-group row">
-                            <label class="col-lg-4 col-form-label text-lg-right">Password</label>
+                        <div class="flex flex-wrap mb-6">
+                            <label for="password" class="block text-gray-700 text-sm font-bold mb-2">
+                                {{ __('Password') }}:
+                            </label>
 
-                            <div class="col-lg-6">
-                                <input
-                                        type="password"
-                                        class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}"
-                                        name="password"
-                                        required
-                                >
-                                @if ($errors->has('password'))
-                                    <div class="invalid-feedback">
-                                        <strong>{{ $errors->first('password') }}</strong>
-                                    </div>
-                                @endif
-                            </div>
+                            <input id="password" type="password"
+                                   class="form-input w-full @error('password') border-red-500 @enderror" name="password"
+                                   required autocomplete="new-password">
+
+                            @errorblock('password')
                         </div>
 
-                        <div class="form-group row">
-                            <label class="col-lg-4 col-form-label text-lg-right">Confirm Password</label>
+                        <div class="flex flex-wrap mb-6">
+                            <label for="password-confirm" class="block text-gray-700 text-sm font-bold mb-2">
+                                Confirm Password:
+                            </label>
 
-                            <div class="col-lg-6">
-                                <input
-                                        type="password"
-                                        class="form-control{{ $errors->has('password_confirmation') ? ' is-invalid' : '' }}"
-                                        name="password_confirmation"
-                                        required
-                                >
-                                @if ($errors->has('password_confirmation'))
-                                    <div class="invalid-feedback">
-                                        <strong>{{ $errors->first('password_confirmation') }}</strong>
-                                    </div>
-                                @endif
-                            </div>
+                            <input id="password-confirm" type="password" class="form-input w-full"
+                                   name="password_confirmation" required autocomplete="new-password">
                         </div>
 
-                        <div class="form-group row">
-                            <div class="col-lg-6 offset-lg-4">
-                                <button type="submit" class="btn btn-primary">
-                                    Register
-                                </button>
-                            </div>
+                        <div class="flex flex-wrap">
+                            <button type="submit"
+                                    class="inline-block align-middle text-center select-none border font-bold whitespace-no-wrap py-2 px-4 rounded text-base leading-normal no-underline text-gray-100 bg-blue-500 hover:bg-blue-700">
+                                Register
+                            </button>
+
+                            <p class="w-full text-xs text-center text-gray-700 mt-8 -mb-4">
+                                Already have an account?
+                                <a class="text-blue-500 hover:text-blue-700 no-underline" href="{{ route('login') }}">
+                                    Login
+                                </a>
+                            </p>
                         </div>
                     </form>
+
                 </div>
             </div>
         </div>
     </div>
-</div>
 @endsection

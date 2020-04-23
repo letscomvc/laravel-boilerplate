@@ -1,6 +1,7 @@
 import Snotify, {SnotifyPosition} from 'vue-snotify';
 
 window.Vue = require('vue');
+window.axios = require('axios');
 
 Vue.use(Snotify, {
   toast: {

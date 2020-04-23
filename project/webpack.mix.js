@@ -19,8 +19,7 @@ mix.copyDirectory('resources/img', 'public/img');
 
 // Compiling Js
 mix.js('resources/js/app.js', 'public/js')
-  .extract()
-  .version();
+  .extract();
 
 // Compiling Sass
 mix.sass('resources/sass/app.scss', 'public/css')
@@ -28,6 +27,9 @@ mix.sass('resources/sass/app.scss', 'public/css')
     processCssUrls: false,
     postCss: [tailwindcss('tailwind.config.js')],
   })
-  .purgeCss({
-    enabled: (process.env.NODE_ENV === 'production') ? true : false,
-  });
+
+
+if (mix.inProduction()) {
+  mix.purgeCss({enabled: true,})
+    .version();
+}
