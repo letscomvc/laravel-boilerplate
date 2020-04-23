@@ -13,7 +13,7 @@
         <span class="md:inline hidden">@lang('links._edit')</span>
     </a>
 
-    <delete-button :link="item.links.destroy" :fetch-data="fetchData">
+    <delete-button class="inline" :link="item.links.destroy" @deleted="fetchData()">
         <confirmable class="inline"
                      slot-scope="{handleDelete}"
                      title="{{$confirmDeleteTitle ?? 'Excluir registro'}}"

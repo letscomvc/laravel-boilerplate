@@ -12,7 +12,13 @@
             </tbody>
         </table>
 
-        <pagination class="w-10/12" :pagination-buttons="paginationButtons"></pagination>
+        <pagination
+          class="w-10/12"
+          :pagination-buttons="paginationButtons"
+          @fetchPrevPage="fetchPrevPage"
+          @fetchNextPage="fetchNextPage"
+          @changePage="page => changePage(page)">
+        </pagination>
     </div>
 </template>
 

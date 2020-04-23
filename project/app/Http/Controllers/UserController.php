@@ -60,7 +60,6 @@ class UserController extends Controller
     {
         return pagination()
             ->repository(UserRepository::class)
-            ->resource(UserResource::class)
-            ->perPage(10);
+            ->resource(UserResource::class);
     }
 }

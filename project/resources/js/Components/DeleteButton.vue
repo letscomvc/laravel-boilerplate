@@ -1,5 +1,5 @@
 <template>
-  <div class="inline">
+  <div>
     <slot :handleDelete="handleDelete">
     </slot>
   </div>
@@ -13,9 +13,6 @@ export default {
     link: {
       type: String,
       required: true,
-    },
-    fetchData: {
-      required: true
     }
   },
 
@@ -26,7 +23,7 @@ export default {
         const status = response.data;
         if (status.type) {
           this.$snotify[status.type](status.message);
-          this.fetchData();
+          this.$emit('deleted')
         } else {
           this.$snotify.error('Bad response');
         }

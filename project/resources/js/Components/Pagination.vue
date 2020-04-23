@@ -56,15 +56,15 @@ export default {
 
   methods: {
     fetchPrevPage() {
-      this.$parent.fetchPrevPage();
+      this.$emit('fetchPrevPage');
     },
 
     fetchNextPage() {
-      this.$parent.fetchNextPage();
+      this.$emit('fetchNextPage');
     },
 
     changePage(page) {
-      this.$parent.changePage(page);
+      this.$emit('changePage', page);
     }
   },
 }
