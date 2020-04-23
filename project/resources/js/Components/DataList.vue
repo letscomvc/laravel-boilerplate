@@ -8,7 +8,7 @@
                 <slot name="header" :orderBy="orderBy"></slot>
             </thead>
             <tbody>
-                <slot name="body" :items="items"></slot>
+                <slot name="body" :fetchData="fetchData" :items="items"></slot>
             </tbody>
         </table>
 
@@ -197,19 +197,6 @@
       changePage(page) {
         this.currentPage = page;
         this.fetchData();
-      },
-
-      handleDelete(link) {
-        axios.delete(link)
-          .then((response) => {
-            const status = response.data;
-            if (status.type) {
-              this.$snotify[status.type](status.message);
-              this.fetchData();
-            } else {
-              this.$snotify.error('Bad response');
-            }
-          });
       },
 
       listenFilters() {

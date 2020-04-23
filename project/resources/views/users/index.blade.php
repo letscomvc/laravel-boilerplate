@@ -39,7 +39,7 @@
             </tr>
         </template>
 
-        <template #body="{items}">
+        <template #body="{fetchData, items}">
             <tr v-for="(item, index) in items" :key="index">
                 @include('users.partials._body')
             </tr>
