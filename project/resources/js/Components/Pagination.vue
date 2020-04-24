@@ -41,18 +41,6 @@ export default {
     currentPage: {
       required: true,
     },
-
-    shouldShowPagination: {
-      required: true,
-    },
-
-    enabledPrevPageButton: {
-      required: true,
-    },
-
-    enabledNextPageButton: {
-      required: true,
-    },
   },
 
   data() {
@@ -72,23 +60,36 @@ export default {
     },
   },
 
+  computed: {
+    enabledNextPageButton() {
+      return this.currentPage < this.totalPages;
+    },
+
+    enabledPrevPageButton() {
+      return this.currentPage > 1;
+    },
+
+    shouldShowPagination() {
+      return this.totalPages > 1;
+    },
+  },
+
   methods: {
     fetchPrevPage() {
       if (this.enabledPrevPageButton) {
         this.currentPageData--;
+        this.$emit('fetchPrevPage');
       }
-      this.$emit('fetchPrevPage');
     },
 
     fetchNextPage() {
       if (this.enabledNextPageButton) {
         this.currentPageData++;
+        this.$emit('fetchNextPage');
       }
-      this.$emit('fetchNextPage');
     },
 
     changePage(page) {
-      console.log(page);
       this.currentPageData = page;
       this.$emit('changePage', page);
     },

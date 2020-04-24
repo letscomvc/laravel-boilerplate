@@ -16,9 +16,6 @@
           class="w-10/12"
           :total-pages="totalPages"
           :current-page="currentPage"
-          :shouldShowPagination="shouldShowPagination"
-          :enabledPrevPageButton="enabledPrevPageButton"
-          :enabledNextPageButton="enabledNextPageButton"
           @fetchPrevPage="fetchPrevPage"
           @fetchNextPage="fetchNextPage"
           @changePage="page => changePage(page)">
@@ -66,18 +63,6 @@
 
       noResults() {
         return this.items.length == 0;
-      },
-
-      enabledNextPageButton() {
-        return this.currentPage < this.totalPages;
-      },
-
-      enabledPrevPageButton() {
-        return this.currentPage > 1;
-      },
-
-      shouldShowPagination() {
-        return this.totalPages > 1;
       },
 
       isNotLoading() {
@@ -138,17 +123,13 @@
       },
 
       fetchPrevPage() {
-        if (this.enabledPrevPageButton) {
-          this.currentPage = this.currentPage - 1;
-          this.fetchData();
-        }
+        this.currentPage = this.currentPage - 1;
+        this.fetchData();
       },
 
       fetchNextPage() {
-        if (this.enabledNextPageButton) {
-          this.currentPage = this.currentPage + 1;
-          this.fetchData();
-        }
+        this.currentPage = this.currentPage + 1;
+        this.fetchData();
       },
 
       changePage(page) {
