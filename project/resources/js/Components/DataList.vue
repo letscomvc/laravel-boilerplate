@@ -14,7 +14,11 @@
 
         <pagination
           class="w-10/12"
-          :pagination-buttons="paginationButtons"
+          :total-pages="totalPages"
+          :current-page="currentPage"
+          :shouldShowPagination="shouldShowPagination"
+          :enabledPrevPageButton="enabledPrevPageButton"
+          :enabledNextPageButton="enabledNextPageButton"
           @fetchPrevPage="fetchPrevPage"
           @fetchNextPage="fetchNextPage"
           @changePage="page => changePage(page)">
@@ -93,7 +97,6 @@
         totalPages: 1,
         currentPage: 1,
         itemsPerPage: 15,
-        paginationButtons: [],
         departmentId: null,
 
         count: {
@@ -130,7 +133,6 @@
         axios.get(this.fetchUrl).then((response) => {
           this.items = response.data.data;
           this.setPagination(response.data.meta);
-          this.definePaginationButtons();
           this.$emit('stop-loading');
         });
       },
@@ -147,59 +149,6 @@
           this.currentPage = this.currentPage + 1;
           this.fetchData();
         }
-      },
-
-      definePaginationButtons() {
-        const totalPages = this.totalPages;
-        let startPage = this.currentPage - 4;
-        let endPage = this.currentPage + 4;
-        let buttons = [];
-
-        if (startPage <= 0) {
-          endPage -= (startPage - 1);
-          startPage = 1;
-        }
-
-        if (endPage > totalPages)
-          endPage = totalPages;
-
-        if (startPage > 1) {
-          buttons.push({
-            disabled: false,
-            page: 1,
-            text: '1'
-          });
-          buttons.push({
-            disabled: true,
-            page: 0,
-            text: '...'
-          });
-        }
-
-        for (let i = startPage; i <= endPage; i++) {
-          const active = (i == this.currentPage);
-          buttons.push({
-            disabled: false,
-            page: i,
-            text: i,
-            active: active
-          });
-        }
-
-        if (endPage < totalPages) {
-          buttons.push({
-            disabled: true,
-            page: 0,
-            text: '...'
-          });
-          buttons.push({
-            disabled: false,
-            page: totalPages,
-            text: totalPages
-          });
-        }
-
-        this.paginationButtons = buttons;
       },
 
       changePage(page) {
