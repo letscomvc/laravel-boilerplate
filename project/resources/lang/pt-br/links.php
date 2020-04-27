@@ -10,6 +10,7 @@
         '_update' => 'Salvar',
         '_destroy' => 'Apagar',
         '_create' => 'Cadastrar',
+        '_back' => 'Voltar',
 
         'new' => [
             'user' => 'Novo usuário',

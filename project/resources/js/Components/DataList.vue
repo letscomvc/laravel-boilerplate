@@ -8,19 +8,28 @@
                 <slot name="header" :orderBy="orderBy"></slot>
             </thead>
             <tbody>
-                <slot name="body" :items="items"></slot>
+                <slot name="body" :fetchData="fetchData" :items="items"></slot>
             </tbody>
         </table>
 
-        <slot name="footer"></slot>
+        <pagination
+          class="w-10/12"
+          :total-pages="totalPages"
+          :current-page="currentPage"
+          @fetchPrevPage="fetchPrevPage"
+          @fetchNextPage="fetchNextPage"
+          @changePage="page => changePage(page)">
+        </pagination>
     </div>
 </template>
 
 <script>
   import SortIcon from '../support/SortIcon.js';
+  import Pagination from "./Pagination";
 
   export default {
-    props: {
+      components: {Pagination},
+      props: {
       dataSource: {
         type: String,
       },
@@ -56,18 +65,6 @@
         return this.items.length == 0;
       },
 
-      enabledNextPageButton() {
-        return this.currentPage < this.totalPages;
-      },
-
-      enabledPrevPageButton() {
-        return this.currentPage > 1;
-      },
-
-      shouldShowPagination() {
-        return this.totalPages > 1;
-      },
-
       isNotLoading() {
         return !this.loading;
       },
@@ -85,7 +82,6 @@
         totalPages: 1,
         currentPage: 1,
         itemsPerPage: 15,
-        paginationButtons: [],
         departmentId: null,
 
         count: {
@@ -122,94 +118,23 @@
         axios.get(this.fetchUrl).then((response) => {
           this.items = response.data.data;
           this.setPagination(response.data.meta);
-          this.definePaginationButtons();
           this.$emit('stop-loading');
         });
       },
 
       fetchPrevPage() {
-        if (this.enabledPrevPageButton) {
-          this.currentPage = this.currentPage - 1;
-          this.fetchData();
-        }
+        this.currentPage = this.currentPage - 1;
+        this.fetchData();
       },
 
       fetchNextPage() {
-        if (this.enabledNextPageButton) {
-          this.currentPage = this.currentPage + 1;
-          this.fetchData();
-        }
-      },
-
-      definePaginationButtons() {
-        const totalPages = this.totalPages;
-        let startPage = this.currentPage - 4;
-        let endPage = this.currentPage + 4;
-        let buttons = [];
-
-        if (startPage <= 0) {
-          endPage -= (startPage - 1);
-          startPage = 1;
-        }
-
-        if (endPage > totalPages)
-          endPage = totalPages;
-
-        if (startPage > 1) {
-          buttons.push({
-            disabled: false,
-            page: 1,
-            text: '1'
-          });
-          buttons.push({
-            disabled: true,
-            page: 0,
-            text: '...'
-          });
-        }
-
-        for (let i = startPage; i <= endPage; i++) {
-          const active = (i == this.currentPage);
-          buttons.push({
-            disabled: false,
-            page: i,
-            text: i,
-            active: active
-          });
-        }
-
-        if (endPage < totalPages) {
-          buttons.push({
-            disabled: true,
-            page: 0,
-            text: '...'
-          });
-          buttons.push({
-            disabled: false,
-            page: totalPages,
-            text: totalPages
-          });
-        }
-
-        this.paginationButtons = buttons;
+        this.currentPage = this.currentPage + 1;
+        this.fetchData();
       },
 
       changePage(page) {
         this.currentPage = page;
         this.fetchData();
-      },
-
-      handleDelete(link) {
-        axios.delete(link)
-          .then((response) => {
-            const status = response.data;
-            if (status.type) {
-              this.$snotify[status.type](status.message);
-              this.fetchData();
-            } else {
-              this.$snotify.error('Bad response');
-            }
-          });
       },
 
       listenFilters() {
