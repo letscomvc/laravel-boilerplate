@@ -11,16 +11,20 @@
         </button>
     </a>
 
-   <confirmable class="d-inline"
-        title="{{$confirmDeleteTitle ?? 'Excluir registro'}}"
-        message="{{$confirmDeleteMessage ?? 'Tem certeza que deseja apagar este registro?'}}">
-        <a v-if="item.links.destroy"
-           slot-scope="{confirm}"
-           @click="confirm($event, () => handleDelete(item.links.destroy))">
-            <button type="button" class="btn btn-danger">
-                @lang('links._destroy')
-            </button>
-        </a>
-    </confirmable>
+    <delete-button class="d-inline" :link="item.links.destroy" @deleted="fetchData()">
+        <confirmable
+            class="d-inline"
+            slot-scope="{handleDelete}"
+            title="{{$confirmDeleteTitle ?? 'Excluir registro'}}"
+            message="{{$confirmDeleteMessage ?? 'Tem certeza que deseja apagar este registro?'}}">
+            <a v-if="item.links.destroy"
+               slot-scope="{confirm}"
+               @click="confirm($event, handleDelete)">
+                <button type="button" class="btn btn-danger">
+                    @lang('links._destroy')
+                </button>
+            </a>
+        </confirmable>
+    </delete-button>
     @yield('button-actions')
 </div>

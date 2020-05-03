@@ -16,39 +16,35 @@
 <div class="row mt-3">
     <div class="col-md-12">
         <data-list data-source="{{ route('pagination.users') }}">
-        </data-list>
-   </div>
-</div>
-@endsection
+            <template #options>
+                <div class="row my-2">
+                    <div class="col-9">
+                        <filter-text url-key="query"
+                                     class="col-12 form-control"
+                                     aria-placeholder="Buscar...">
+                        </filter-text>
+                    </div>
 
-@section('custom-template')
-    <template id="data-list" slot-scope="modelScope">
-        <div>
-            <div class="row my-2">
-                <div class="col-md-6">
-                    <a :href="'{{ route('users.create') }}'">
-                        <button class="btn btn-primary">Novo usuário</button>
-                    </a>
+                    <div class="col-3">
+                        <a :href="'{{ route('users.create') }}'">
+                            <button class="btn btn-primary">Novo usuário</button>
+                        </a>
+                    </div>
                 </div>
-                <div class="col-md-6">
-                    <input type="text" v-model="query" class="form-control"
-                        placeholder="Buscar ..." >
-                </div>
-            </div>
-            <table class="table">
-                <thead>
-                    <tr>
-                        @include('users.partials._head')
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="(item, index) in items" :key="index">
-                        @include('users.partials._body')
-                        <td>@include('shared.partials._buttons_actions')</td>
-                    </tr>
-                </tbody>
-            </table>
-            @include('shared.partials._pagination')
-        </div>
-    </template>
+            </template>
+
+            <template #header="{orderBy}">
+                <tr>
+                    @include('users.partials._head')
+                </tr>
+            </template>
+
+            <template #body="{fetchData, items}">
+                <tr v-for="(item, index) in items" :key="index">
+                    @include('users.partials._body')
+                </tr>
+            </template>
+        </data-list>
+    </div>
+</div>
 @endsection

@@ -1,5 +1,5 @@
 <template>
-    <input v-model="value" >
+    <input v-model="value" :placeholder="ariaPlaceholder">
 </template>
 
 <script>
@@ -10,6 +10,13 @@ export default {
     name: 'filter-text',
 
     mixins: [filter],
+
+    props: {
+        ariaPlaceholder: {
+            required: false,
+            default: 'Buscar...',
+        }
+    },
 
     watch: {
       value: _.debounce(function (val) {
