@@ -16,8 +16,6 @@
           class="col-10"
           :total-pages="totalPages"
           :current-page="currentPage"
-          @fetchPrevPage="fetchPrevPage"
-          @fetchNextPage="fetchNextPage"
           @changePage="page => changePage(page)">
         </pagination>
     </div>

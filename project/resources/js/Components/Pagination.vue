@@ -50,7 +50,7 @@ export default {
   data() {
     return {
       paginationButtons: [],
-      currentPageData: 1,
+      currentPageMutable: 1,
     }
   },
 
@@ -59,7 +59,7 @@ export default {
       this.definePaginationButtons();
     },
 
-    currentPageData() {
+    currentPageMutable() {
       this.definePaginationButtons();
     },
   },
@@ -81,20 +81,20 @@ export default {
   methods: {
     fetchPrevPage() {
       if (this.enabledPrevPageButton) {
-        this.currentPageData--;
-        this.$emit('fetchPrevPage');
+        this.currentPageMutable--;
+        this.$emit('changePage', this.currentPageMutable);
       }
     },
 
     fetchNextPage() {
       if (this.enabledNextPageButton) {
-        this.currentPageData++;
-        this.$emit('fetchNextPage');
+        this.currentPageMutable++;
+        this.$emit('changePage', this.currentPageMutable);
       }
     },
 
     changePage(page) {
-      this.currentPageData = page;
+      this.currentPageMutable = page;
       this.$emit('changePage', page);
     },
 
@@ -126,7 +126,7 @@ export default {
       }
 
       for (let i = startPage; i <= endPage; i++) {
-        const active = (i == this.currentPageData);
+        const active = (i == this.currentPageMutable);
         buttons.push({
           disabled: false,
           page: i,
