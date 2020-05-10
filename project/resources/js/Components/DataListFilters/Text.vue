@@ -1,5 +1,5 @@
 <template>
-    <input v-model="value" :placeholder="ariaPlaceholder">
+    <input v-model="value" :placeholder="placeholder">
 </template>
 
 <script>
@@ -12,7 +12,7 @@ export default {
     mixins: [filter],
 
     props: {
-        ariaPlaceholder: {
+        placeholder: {
             required: false,
             default: 'Buscar...',
         }

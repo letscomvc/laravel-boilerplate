@@ -21,7 +21,7 @@
                     <div class="col-9">
                         <filter-text url-key="query"
                                      class="col-12 form-control"
-                                     aria-placeholder="Buscar...">
+                                     placeholder="Buscar...">
                         </filter-text>
                     </div>
 
