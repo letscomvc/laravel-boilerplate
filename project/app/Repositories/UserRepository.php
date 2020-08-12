@@ -34,7 +34,7 @@ class UserRepository extends Repository
     private function hashPassword($data)
     {
         $data['password'] = $data['password'] ?? null;
-        if ($data['password']) {
+        if (!$data['password']) {
             unset($data['password']);
             unset($data['password_confirmation']);
         } else {
