@@ -273,20 +273,55 @@ if (!function_exists('cached_include')) {
     function cached_include($view, $vars = null, $time = 60)
     {
         $renderedView = function () use ($view, $vars) {
-            return view(
-                $view,
-                is_array($vars)
-                    ? $vars
-                    : array_except(get_defined_vars(), ['__data', '__path'])
-            )->render();
+            $vars = is_array($vars)
+                ? $vars
+                : array_except(get_defined_vars(), ['__data', '__path']);
+
+            return view($view, $vars)->render();
         };
 
-        if (config('cache.enable_application_cache')) {
-            $cacheKey = $view.':'.md5(serialize($vars));
-            return \Cache::remember($cacheKey, $time, $renderedView);
+        $cacheKey = $view.':'.md5(serialize($vars));
+        return cache_manager($cacheKey, $time.' minutes', $renderedView);
+    }
+}
+
+if (!function_exists('cache_manager')) {
+    /**
+     *  Resolve o resultado de uma chave de cache e retorna seu valor. Caso chamado
+     * sem nenhum argumento, retorna uma instancia de \App\Helpers\CacheManager.
+     *
+     * @param  string|callable  $key  Chave de cache
+     * @param  string  $ttl  Tempo de duração do cache. Ver guia de formatos
+     * relativos em http://php.net/manual/pt_BR/datetime.formats.relative.php
+     * @param  callable  $value  Valor a ser criado cache
+     * @param  array  $tags  Marcações para a chave de cache
+     * @return mixed
+     */
+    function cache_manager()
+    {
+        $args = func_get_args();
+        $cacheManager = app()->make(\App\Support\CacheManager::class);
+
+        if (empty($args)) {
+            return $cacheManager;
         }
 
-        return $renderedView();
+        return $cacheManager->remember(...$args);
+    }
+}
+
+if (!function_exists('request_cache')) {
+    /**
+     *  Faz cache de um resultado apenas durante a requisição atual.
+     *
+     * @param  string|callable  $key  Chave de cache
+     * @param  callable  $value  Valor a ser criado cache
+     * @return mixed
+     */
+    function request_cache($key, callable $value)
+    {
+        $cacheManager = app()->make(\App\Support\CacheManager::class);
+        return $cacheManager->requestCache($key, $value);
     }
 }
 
