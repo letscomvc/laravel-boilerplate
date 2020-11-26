@@ -2,8 +2,9 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
 use Carbon\Carbon;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -14,9 +15,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        setlocale(LC_MONETARY, config('app.locale') . '.UTF-8');
+        setlocale(LC_MONETARY, config('app.locale').'.UTF-8');
 
         Carbon::setLocale(config('app.locale'));
+        Paginator::useBootstrap();
     }
 
     /**

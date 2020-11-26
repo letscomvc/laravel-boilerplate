@@ -5,4 +5,4 @@
  * Namespace 'App\Http\Controllers\Api\v1'
  */
 
-Route::get('/me', 'UsersController@me');
+Route::get('/me', [\App\Http\Controllers\Api\v1\UsersController::class, 'me']);

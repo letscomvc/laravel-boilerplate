@@ -2,20 +2,14 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\Facades\Route;
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Route;
 
 class RouteServiceProvider extends ServiceProvider
 {
-    /**
-     * This namespace is applied to your controller routes.
-     *
-     * In addition, it is set as the URL generator's root namespace.
-     *
-     * @var string
-     */
-    protected $namespace = 'App\Http\Controllers';
-
     /**
      * Define your route model bindings, pattern filters, etc.
      *
@@ -23,7 +17,7 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        $this->configureRateLimiting();
 
         parent::boot();
     }
@@ -35,9 +29,8 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function map()
     {
-        $this->mapApiRoutes();
-
         $this->mapWebRoutes();
+        $this->mapApiRoutes();
     }
 
     /**
@@ -49,31 +42,13 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapWebRoutes()
     {
-        $this->mapUnauthenticatedWebRoutes();
-        $this->mapAuthenticatedWebRoutes();
-        $this->mapPaginationRoutes();
-    }
-
-    protected function mapUnauthenticatedWebRoutes()
-    {
         Route::middleware('web')
-             ->namespace($this->namespace)
-             ->group(base_path('routes/web/unauthenticated.php'));
-    }
+            ->namespace($this->namespace)
+            ->group(base_path('routes/web/unauthenticated.php'));
 
-    protected function mapAuthenticatedWebRoutes()
-    {
         Route::middleware(['web', 'auth'])
-             ->namespace($this->namespace)
-             ->group(base_path('routes/web/authenticated.php'));
-    }
-
-    protected function mapPaginationRoutes()
-    {
-        Route::middleware(['web', 'auth'])
-             ->namespace($this->namespace)
-             ->prefix('pagination')
-             ->group(base_path('routes/web/pagination.php'));
+            ->namespace($this->namespace)
+            ->group(base_path('routes/web/authenticated.php'));
     }
 
     /**
@@ -85,22 +60,27 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapApiRoutes()
     {
-        $this->mapApiV1Routes();
+        Route::prefix('api/v1')
+            ->middleware(['api', 'auth:api'])
+            ->namespace($this->namespace)
+            ->group(base_path('routes/api/v1/authenticated.php'));
+
+        Route::prefix('api/v1')
+            ->middleware('api')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/api/v1/unauthenticated.php'));
     }
 
-    protected function mapApiV1Routes()
+    /**
+     * Configure the rate limiters for the application.
+     *
+     * @return void
+     */
+    protected function configureRateLimiting()
     {
-        $namespace = $this->namespace . '\Api\v1';
-
-        Route::prefix('api/v1')
-             ->middleware('api')
-             ->middleware('auth:api')
-             ->namespace($namespace)
-             ->group(base_path('routes/api/v1/authenticated.php'));
-
-        Route::prefix('api/v1')
-             ->middleware('api')
-             ->namespace($namespace)
-             ->group(base_path('routes/api/v1/unauthenticated.php'));
+        RateLimiter::for('api', function (Request $request) {
+            return Limit::perMinute(60)
+                ->by(optional($request->user())->id ?: $request->ip());
+        });
     }
 }
