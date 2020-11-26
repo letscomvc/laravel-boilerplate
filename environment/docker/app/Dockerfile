@@ -25,6 +25,8 @@ RUN apk upgrade --update && apk add \
     nodejs \
     nodejs-npm
 
+RUN composer self-update --stable
+
 RUN groupadd -g $GID -o $UNAME \
     && useradd -m -u $UID -g $GID -o -s /bin/bash $UNAME
 

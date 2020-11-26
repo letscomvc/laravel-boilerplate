@@ -10,13 +10,13 @@ services:
     ports:
       - 80:8080
     volumes:
-      - ${LARAVEL_ROOT_PATH-./project}:/var/www/app
+      - ./project:/var/www/app
       - ./environment/docker/web/site.conf:/etc/nginx/conf.d/site.conf
 
   app:
     build: environment/docker/app/.
     volumes:
-      - ${LARAVEL_ROOT_PATH-./project}:/var/www/app
+      - ./project:/var/www/app
 
   postgres:
     image: postgres:10.3
@@ -44,7 +44,7 @@ services:
   worker:
     build: environment/docker/worker/.
     volumes:
-      - ${LARAVEL_ROOT_PATH-./project}:/var/www/app
+      - ./project:/var/www/app
 
   mailcatcher:
     image: schickling/mailcatcher

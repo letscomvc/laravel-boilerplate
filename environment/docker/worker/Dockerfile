@@ -15,6 +15,8 @@ RUN apk upgrade --update && apk add \
   && docker-php-ext-install exif \
   && docker-php-ext-install opcache
 
+RUN composer self-update --stable
+
 RUN echo '* * * * * cd /var/www/app && php artisan schedule:run' > /etc/crontabs/root
 
 WORKDIR /var/www/app
