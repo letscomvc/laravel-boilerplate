@@ -26,9 +26,16 @@ services:
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_MULTIPLE_DATABASES=${APP_NAME-app}_dev,${APP_NAME-app}_test
-      - POSTGRES_PASSWORD=laraveldocker
+      - POSTGRES_DB=app
       - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=laraveldocker
+
+  postgres-test:
+    image: postgres:10.3
+    environment:
+      - POSTGRES_DB=app_test
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=laraveldocker
 
   redis:
     image: redis:5.0

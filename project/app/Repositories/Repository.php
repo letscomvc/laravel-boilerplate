@@ -1,14 +1,17 @@
 <?php
 namespace App\Repositories;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Collection;
+use App\Exceptions\Repositories\RepositoryException;
 use App\Repositories\Criteria\Criteria;
 use App\Repositories\Criteria\CriteriaContract;
-use App\Exceptions\Repositories\RepositoryException;
+use App\Traits\Newable;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 abstract class Repository implements CriteriaContract
 {
+    use Newable;
+
     /**
      * @var
      */
