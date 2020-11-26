@@ -44,11 +44,10 @@ class ChooseReturn implements Responsable
      *
      * @param  string  $type  success|error|info|warning
      * @param  string  $message  Response message
-     * @param  string  $route  get route or routeName
-     * @param  mixed  $routeArguments  Route arguments when preceded by route name
+     * @param  string|array  $route  Url or array with route setup
      * @return self Configured ChooseReturn
      */
-    public static function choose($type, $message, $route = null, $routeArguments = null)
+    public static function choose(string $type, string $message, $route = null): self
     {
         $chooseReturnInstance = new self();
 
@@ -56,7 +55,7 @@ class ChooseReturn implements Responsable
             ->setMessage($message);
 
         if ($route) {
-            $chooseReturnInstance->setRoute($route, $routeArguments);
+            $chooseReturnInstance->setRoute($route);
         }
 
         return $chooseReturnInstance;
@@ -68,7 +67,7 @@ class ChooseReturn implements Responsable
      * @param  string  $type  success|error|info|warning
      * @return \App\Support\ChooseReturn
      */
-    public function setType($type)
+    public function setType(string $type): self
     {
         if (!in_array($type, ['success', 'error', 'info', 'warning'])) {
             throw new \InvalidArgumentException("Invalid response type [{$type}]", 500);
@@ -81,15 +80,20 @@ class ChooseReturn implements Responsable
     /**
      * Set redirection route
      *
-     * @param  string  $route  get route or routeName
-     * @param  mixed  $routeArguments  When preceded by route name, route arguments
+     * @param  string|array  $route  get route or routeName
      * @return \App\Support\ChooseReturn
      */
-    public function setRoute($route, $routeArguments = null)
+    public function setRoute($route): self
     {
-        $this->route = is_valid_url($route)
-            ? $route
-            : route($route, $routeArguments);
+        if (is_string($route)) {
+            $this->route = is_valid_url($route)
+                ? $route
+                : route($route);
+        }
+
+        if (is_array($route)) {
+            $this->route = route(...$route);
+        }
 
         return $this;
     }
@@ -100,7 +104,7 @@ class ChooseReturn implements Responsable
      * @param  string  $message  Response message
      * @return \App\Support\ChooseReturn
      */
-    public function setMessage($message)
+    public function setMessage(string $message): self
     {
         $this->message = $message;
         return $this;
@@ -112,7 +116,7 @@ class ChooseReturn implements Responsable
      * @param  mixed  $data
      * @return \App\Support\ChooseReturn
      */
-    public function setData($data)
+    public function setData($data): self
     {
         $this->data = $data;
         return $this;
@@ -123,7 +127,7 @@ class ChooseReturn implements Responsable
      *
      * @return $this
      */
-    public function forceRedirect()
+    public function forceRedirect(): self
     {
         $this->forceRedirect = true;
         return $this;

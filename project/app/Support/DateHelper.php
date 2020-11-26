@@ -34,7 +34,7 @@ class DateHelper
      * @param  string  $fromFormat  Origin format.
      * @return string
      */
-    public static function formatDate($date, $toFormat = null, $fromFormat = null)
+    public static function formatDate($date, ?string $toFormat = null, ?string $fromFormat = null)
     {
         if ($toFormat === null) {
             $toFormat = static::getDateTimeFormat();
