@@ -1,7 +1,6 @@
 #!/bin/bash
 
 export APP_NAME='app'
-export LARAVEL_ROOT_PATH='./project'
 
 handle_command() {
   if [[ $1 == "start" ]]; then

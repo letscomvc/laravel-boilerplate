@@ -52,7 +52,11 @@ return [
     |
     */
 
-    'prefix' => env('HORIZON_PREFIX', 'horizon:'),
+    'prefix' => sprintf(
+        '%s:%s:',
+        env('APP_NAME', 'default-project'),
+        env('HORIZON_PREFIX', 'horizon')
+    ),
 
     /*
     |--------------------------------------------------------------------------
