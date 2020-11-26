@@ -1,10 +1,10 @@
 <?php
 
-use Illuminate\Database\Seeder;
-
-use Spatie\Permission\Models\Permission;
+namespace Database\Seeders;
 
 use App\Support\PermissionsHelper;
+use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Permission;
 
 class PermissionsTableSeeder extends Seeder
 {

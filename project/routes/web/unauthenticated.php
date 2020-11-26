@@ -5,4 +5,4 @@
 
 Auth::routes();
 
-Route::get('/', 'WelcomeController');
+Route::get('/', App\Http\Controllers\WelcomeController::class);
