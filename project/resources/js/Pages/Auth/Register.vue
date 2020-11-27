@@ -6,13 +6,26 @@
           <div class="flex flex-col break-words bg-white border border-2 rounded shadow-md">
 
             <div class="font-semibold bg-gray-200 text-gray-700 py-3 px-6 mb-0">
-              Login
+              Cadastre-se
             </div>
 
             <form class="w-full p-6" method="POST" @submit.prevent="submit">
               <div class="flex flex-wrap mb-6">
                 <label for="email" class="block text-gray-700 text-sm font-bold mb-2">
-                  E-Mail Address:
+                  Nome de usuário:
+                </label>
+
+                <input type="text"
+                       id="name"
+                       v-model="form.name"
+                       class="form-input w-full" name="name"
+                       value="" required autocomplete="name" autofocus>
+                <ErrorBlock field="name"></ErrorBlock>
+              </div>
+
+              <div class="flex flex-wrap mb-6">
+                <label for="email" class="block text-gray-700 text-sm font-bold mb-2">
+                  E-Mail:
                 </label>
 
                 <input type="email"
@@ -25,7 +38,7 @@
 
               <div class="flex flex-wrap mb-6">
                 <label for="password" class="block text-gray-700 text-sm font-bold mb-2">
-                  Password:
+                  Senha:
                 </label>
 
                 <input type="password"
@@ -36,25 +49,30 @@
                 <ErrorBlock field="password"></ErrorBlock>
               </div>
 
-              <div class="flex mb-6">
-                <label class="inline-flex items-center text-sm text-gray-700" for="remember">
-                  <input type="checkbox" name="remember" id="remember"
-                         class="form-checkbox" v-model="form.remember">
-                  <span class="ml-2">Remember me</span>
+              <div class="flex flex-wrap mb-6">
+                <label for="password_confirmation" class="block text-gray-700 text-sm font-bold mb-2">
+                  Confirmação da senha:
                 </label>
+
+                <input type="password"
+                       id="password_confirmation"
+                       v-model="form.password_confirmation"
+                       class="form-input w-full" name="password_confirmation"
+                       required>
+                <ErrorBlock field="password_confirmation"></ErrorBlock>
               </div>
 
               <div class="flex flex-wrap items-center">
                 <button type="submit"
                         class="bg-blue-500 hover:bg-blue-700 text-gray-100 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                  Login
+                  Cadastrar
                 </button>
 
                 <p class="w-full text-xs text-center text-gray-700 mt-8 -mb-4">
-                  Ainda não é cadastrado?
+                  Já é cadastrado?
                   <inertia-link class="text-blue-500 hover:text-blue-700 no-underline"
-                     :href="route('register')">
-                    Cadastre-se
+                     :href="route('login')">
+                    Faça login
                   </inertia-link>
                 </p>
               </div>
@@ -72,7 +90,7 @@ import Layout from '@/Shared/Layouts/Auth/Layout';
 import ErrorBlock from "@/Components/ErrorBlock";
 
 export default {
-  name: "Auth",
+  name: "Register",
 
   components: {
     ErrorBlock,
@@ -87,9 +105,10 @@ export default {
     return {
       sending: false,
       form: {
+        name: '',
         email: '',
         password: '',
-        remember: null,
+        password_confirmation: '',
       },
     }
   },
@@ -97,10 +116,12 @@ export default {
   methods: {
     submit() {
       this.sending = true
-
-      this.$inertia
-          .post(this.route('login'), this.form)
-          .then(() => this.sending = false)
+      this.$inertia.post(this.route('register'), {
+        name: this.form.name,
+        email: this.form.email,
+        password: this.form.password,
+        password_confirmation: this.form.password_confirmation,
+      }).then(() => this.sending = false)
     },
   },
 }
