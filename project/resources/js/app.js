@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Snotify, {SnotifyPosition} from 'vue-snotify';
-import {App, plugin as InertiaPlugin} from '@inertiajs/inertia-vue'
-import { InertiaProgress } from '@inertiajs/progress'
+import {App as InertiaApp, plugin as InertiaPlugin} from '@inertiajs/inertia-vue'
+import {InertiaProgress} from '@inertiajs/progress'
 
 
 /**
@@ -24,19 +24,15 @@ Vue.use(Snotify, {
   }
 });
 
-Vue.mixin({
-  methods: {
-    route: (name, params, absolute) => route(name, params, absolute),
-  }
-});
+Vue.prototype.$route = (name, params, absolute) => route(name, params, absolute);
 
-const app = document.getElementById('app')
+const appElement = document.getElementById('app')
 
 new Vue({
-  render: h => h(App, {
+  render: h => h(InertiaApp, {
     props: {
-      initialPage: JSON.parse(app.dataset.page),
+      initialPage: JSON.parse(appElement.dataset.page),
       resolveComponent: name => require(`./Pages/${name}`).default,
     },
   }),
-}).$mount(app)
+}).$mount(appElement)

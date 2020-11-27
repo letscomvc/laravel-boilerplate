@@ -53,7 +53,7 @@
                 <p class="w-full text-xs text-center text-gray-700 mt-8 -mb-4">
                   Ainda não é cadastrado?
                   <inertia-link class="text-blue-500 hover:text-blue-700 no-underline"
-                     :href="route('register')">
+                     :href="$route('register')">
                     Cadastre-se
                   </inertia-link>
                 </p>
@@ -99,7 +99,7 @@ export default {
       this.sending = true
 
       this.$inertia
-          .post(this.route('login'), this.form)
+          .post(this.$route('login'), this.form)
           .then(() => this.sending = false)
     },
   },

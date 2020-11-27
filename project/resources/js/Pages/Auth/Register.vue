@@ -71,7 +71,7 @@
                 <p class="w-full text-xs text-center text-gray-700 mt-8 -mb-4">
                   Já é cadastrado?
                   <inertia-link class="text-blue-500 hover:text-blue-700 no-underline"
-                     :href="route('login')">
+                     :href="$route('login')">
                     Faça login
                   </inertia-link>
                 </p>
@@ -116,7 +116,7 @@ export default {
   methods: {
     submit() {
       this.sending = true
-      this.$inertia.post(this.route('register'), {
+      this.$inertia.post(this.$route('register'), {
         name: this.form.name,
         email: this.form.email,
         password: this.form.password,
