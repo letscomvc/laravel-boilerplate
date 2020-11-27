@@ -13,6 +13,6 @@ class WelcomeController extends Controller
      */
     public function __invoke()
     {
-        return Inertia::render('Welcome/Index');
+        return Inertia::render('Home/Welcome');
     }
 }

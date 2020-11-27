@@ -12,7 +12,7 @@
             <inertia-link class="no-underline hover:underline text-gray-100 text-sm p-3"
                :href="route('login')">Login</inertia-link>
             <inertia-link class="no-underline hover:underline text-gray-100 text-sm p-3"
-               :href="route('register')">Register</inertia-link>
+               :href="route('register')">Cadastre-se</inertia-link>
           </template>
           <template v-else>
             <span class="text-gray-100 text-sm pr-4">{{ user.name }}</span>
@@ -23,7 +23,7 @@
             </inertia-link>
 
             <inertia-link @click.prevent="logout"
-               class="no-underline hover:underline text-gray-100 text-sm p-3">
+               class="no-underline hover:underline text-gray-100 text-sm p-3 cursor-pointer">
               Desconectar
             </inertia-link>
           </template>

@@ -1,7 +1,7 @@
 <template>
   <div>
     <navbar class="w-full"></navbar>
-    <div class="container px-12">
+    <div class="w-full px-12">
       <slot/>
     </div>
   </div>

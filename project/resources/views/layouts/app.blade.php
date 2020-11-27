@@ -54,8 +54,6 @@
     <vue-snotify></vue-snotify>
 
     <div class="container pt-3 px-10 mx-auto">
-        @include('layouts.breadcrumb')
-
         @yield('content')
     </div>
 </div>

@@ -12,7 +12,7 @@
             <a class="no-underline hover:underline text-gray-100 text-sm p-3"
                :href="route('login')">Login</a>
             <a class="no-underline hover:underline text-gray-100 text-sm p-3"
-               :href="route('register')">Register</a>
+               :href="route('register')">Cadastre-se</a>
           </template>
           <template v-else>
             <span class="text-gray-100 text-sm pr-4">{{ user.name }}</span>
@@ -23,7 +23,7 @@
             </a>
 
             <a @click.prevent="logout"
-               class="no-underline hover:underline text-gray-100 text-sm p-3">
+               class="no-underline hover:underline text-gray-100 text-sm p-3 cursor-pointer">
               Desconectar
             </a>
           </template>
