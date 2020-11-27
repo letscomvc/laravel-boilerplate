@@ -43,6 +43,10 @@ mix.sass('resources/sass/app.scss', 'public/css')
 
 
 if (mix.inProduction()) {
-  mix.purgeCss({enabled: true,})
+  mix.purgeCss({
+    enabled: true,
+    folders: ['resources'],
+    extensions: ['html', 'js', 'php', 'vue'],
+  })
     .version();
 }
