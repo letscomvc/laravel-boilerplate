@@ -14,6 +14,19 @@ require('laravel-mix-purgecss');
  |
  */
 
+mix.webpackConfig({
+  output: {
+    chunkFilename: '[name].js?id=[chunkhash]'
+  },
+  resolve: {
+    alias: {
+      'vue$': 'vue/dist/vue.runtime.esm.js',
+      '@': path.resolve(__dirname, './resources/js'),
+    },
+    extensions: ['*', '.js', '.vue', '.json'],
+  },
+})
+
 //Copy images and fonts from 'resources/' to 'public/'
 mix.copyDirectory('resources/img', 'public/img');
 

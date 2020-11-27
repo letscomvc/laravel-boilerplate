@@ -24,7 +24,7 @@
 </template>
 
 <script>
-  import SortIcon from '../support/SortIcon.js';
+  import SortIcon from '../Support/SortIcon.js';
   import Pagination from "./Pagination";
 
   export default {

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mx-auto">
+    <div class="container mx-auto">
         <div class="flex flex-wrap justify-center">
             <div class="w-full max-w-sm">
                 <div class="flex flex-col break-words bg-white border border-2 rounded shadow-md">
@@ -18,7 +18,9 @@
                                 E-Mail Address:
                             </label>
 
-                            <input id="email" type="email" class="form-input w-full @error('email') border-red-500 @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
+                            <input id="email" type="email"
+                                   class="form-input w-full @error('email') border-red-500 @enderror" name="email"
+                                   value="{{ old('email') }}" required autocomplete="email" autofocus>
 
                             @errorblock('email')
                         </div>
@@ -28,27 +30,32 @@
                                 Password:
                             </label>
 
-                            <input id="password" type="password" class="form-input w-full @error('password') border-red-500 @enderror" name="password" required>
+                            <input id="password" type="password"
+                                   class="form-input w-full @error('password') border-red-500 @enderror" name="password"
+                                   required>
 
                             @errorblock('password')
                         </div>
 
                         <div class="flex mb-6">
                             <label class="inline-flex items-center text-sm text-gray-700" for="remember">
-                                <input type="checkbox" name="remember" id="remember" class="form-checkbox" {{ old('remember') ? 'checked' : '' }}>
+                                <input type="checkbox" name="remember" id="remember"
+                                       class="form-checkbox" {{ old('remember') ? 'checked' : '' }}>
                                 <span class="ml-2">Remember me</span>
                             </label>
                         </div>
 
                         <div class="flex flex-wrap items-center">
-                            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-gray-100 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                            <button type="submit"
+                                    class="bg-blue-500 hover:bg-blue-700 text-gray-100 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                                 Login
                             </button>
 
                             @if (Route::has('register'))
                                 <p class="w-full text-xs text-center text-gray-700 mt-8 -mb-4">
                                     Don't have an account?
-                                    <a class="text-blue-500 hover:text-blue-700 no-underline" href="{{ route('register') }}">
+                                    <a class="text-blue-500 hover:text-blue-700 no-underline"
+                                       href="{{ route('register') }}">
                                         Register
                                     </a>
                                 </p>
