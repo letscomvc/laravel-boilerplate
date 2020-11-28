@@ -17,12 +17,12 @@ class User extends JsonResource
         return [
             'name' => $this->name,
             'email' => $this->email,
-            'created_at' => format_date($this->created_at),
+            'created_at' => $this->created_at->toIso8601String(),
 
             'links' => [
-                'edit' => $this->when(true, route('users.edit', $this->id)),
-                'show' => $this->when(true, route('users.show', $this->id)),
-                'destroy' => $this->when(true, route('users.destroy', $this->id)),
+                'edit' => route('users.edit', $this->id),
+                'show' => route('users.show', $this->id),
+                'destroy' => route('users.destroy', $this->id),
             ],
         ];
     }

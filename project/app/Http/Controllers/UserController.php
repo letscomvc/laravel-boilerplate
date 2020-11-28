@@ -6,12 +6,16 @@ use App\Http\Requests\UserRequest;
 use App\Http\Resources\User as UserResource;
 use App\Models\User;
 use App\Repositories\UserRepository;
+use Inertia\Inertia;
 
 class UserController extends Controller
 {
     public function index()
     {
-        return view('users.index');
+        $pagination = UserRepository::new()
+            ->paginate();
+
+        return Inertia::render('Users/Index', ['users' => $pagination]);
     }
 
     public function create()

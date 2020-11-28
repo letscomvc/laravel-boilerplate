@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import Snotify, {SnotifyPosition} from 'vue-snotify';
 import {App as InertiaApp, plugin as InertiaPlugin} from '@inertiajs/inertia-vue'
-import {InertiaProgress} from '@inertiajs/progress'
-
+import {InertiaProgress} from '@inertiajs/progress';
+import Dayjs from 'dayjs';
 
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
@@ -25,6 +25,7 @@ Vue.use(Snotify, {
 });
 
 Vue.prototype.$route = (name, params, absolute) => route(name, params, absolute);
+Vue.prototype.$dayjs = (...params) => Dayjs(...params);
 
 const appElement = document.getElementById('app')
 

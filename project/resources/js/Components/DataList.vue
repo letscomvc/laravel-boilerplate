@@ -25,7 +25,7 @@
 
 <script>
   import SortIcon from '../Support/SortIcon.js';
-  import Pagination from "./Pagination";
+  import Pagination from "./DatalistPagination";
 
   export default {
       components: {Pagination},

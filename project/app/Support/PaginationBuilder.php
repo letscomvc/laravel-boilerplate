@@ -5,6 +5,7 @@ namespace App\Support;
 use App\Repositories\Criteria\Common\OrderResolvedByUrlCriteria;
 use App\Repositories\Criteria\Common\SearchResolvedByUrlCriteria;
 use App\Repositories\Repository;
+use App\Traits\Newable;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Collection;
@@ -12,6 +13,8 @@ use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class PaginationBuilder implements Responsable
 {
+    use Newable;
+
     public const PER_PAGE_DEFAULT = 30;
 
     private $perPage;
@@ -225,6 +228,7 @@ class PaginationBuilder implements Responsable
         $simplePaginate = $this->simplePaginate;
 
         if ($simplePaginate) {
+            dd($this->repository->simplePaginate($this->getPerPage()));
             return $this->repository->simplePaginate($this->getPerPage());
         }
 

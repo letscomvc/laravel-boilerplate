@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Repositories;
 
 use App\Exceptions\Repositories\RepositoryException;
@@ -33,7 +34,7 @@ abstract class Repository implements CriteriaContract
     protected $skipCriteria = false;
 
     /**
-     * @param Collection $criteria
+     * @param  Collection  $criteria
      * @throws RepositoryException
      */
     public function __construct()
@@ -41,37 +42,6 @@ abstract class Repository implements CriteriaContract
         $this->criteria = collect();
         $this->resetScope();
         $this->resetQuery();
-    }
-
-    abstract protected function getClass();
-
-    protected function resetQuery()
-    {
-        $this->model = $this->makeModel();
-    }
-
-    protected function returnOrFindModel($element)
-    {
-        $class = $this->getClass();
-        if ($element instanceof $class) {
-            return $element;
-        }
-
-        if (is_numeric($element)) {
-            return $this->model->findOrFail($element);
-        }
-    }
-
-    protected function returnOrFindModelWithTrashed($element)
-    {
-        $class = $this->getClass();
-        if ($element instanceof $class) {
-            return $element;
-        }
-
-        if (is_numeric($element)) {
-            return $this->model->withTrashed()->findOrFail($element);
-        }
     }
 
     public function first()
@@ -85,7 +55,8 @@ abstract class Repository implements CriteriaContract
     {
         $this->resetQuery();
         $this->applyCriteria();
-        return $this->model->select($columns)->get();
+        return $this->model->select($columns)
+            ->get();
     }
 
     public function pluck($key, $value = null)
@@ -121,7 +92,7 @@ abstract class Repository implements CriteriaContract
         $this->resetQuery();
         $this->applyCriteria();
         $query = $this->model->where($field, $value)
-                             ->addSelect($columns);
+            ->addSelect($columns);
         return $query;
     }
 
@@ -177,7 +148,8 @@ abstract class Repository implements CriteriaContract
     public function deleteMultiple($ids)
     {
         $this->resetQuery();
-        return $this->model->whereIn('id', $ids)->delete();
+        return $this->model->whereIn('id', $ids)
+            ->delete();
     }
 
     public function restore($id)
@@ -208,6 +180,14 @@ abstract class Repository implements CriteriaContract
         return $this->model->paginate($perPage, $columns);
     }
 
+    public function simplePaginate($perPage = 15, $columns = ['*'])
+    {
+        $this->resetQuery();
+        $this->applyCriteria();
+
+        return $this->model->simplePaginate($perPage, $columns);
+    }
+
     public function count()
     {
         $this->resetQuery();
@@ -231,7 +211,6 @@ abstract class Repository implements CriteriaContract
         return $model->newQuery();
     }
 
-
     /**
      * @return $this
      */
@@ -242,7 +221,7 @@ abstract class Repository implements CriteriaContract
     }
 
     /**
-     * @param bool $status
+     * @param  bool  $status
      * @return $this
      */
     public function skipCriteria($status = true)
@@ -260,7 +239,7 @@ abstract class Repository implements CriteriaContract
     }
 
     /**
-     * @param Criteria $criteria
+     * @param  Criteria  $criteria
      * @return $this
      */
     public function getByCriteria(Criteria $criteria)
@@ -270,7 +249,7 @@ abstract class Repository implements CriteriaContract
     }
 
     /**
-     * @param mixed $criteria
+     * @param  mixed  $criteria
      * @return $this
      */
     public function pushCriteria($criteria)
@@ -316,5 +295,37 @@ abstract class Repository implements CriteriaContract
         $this->resetQuery();
         $this->applyCriteria();
         return $this->model->toSql();
+    }
+
+    abstract protected function getClass();
+
+    protected function resetQuery()
+    {
+        $this->model = $this->makeModel();
+    }
+
+    protected function returnOrFindModel($element)
+    {
+        $class = $this->getClass();
+        if ($element instanceof $class) {
+            return $element;
+        }
+
+        if (is_numeric($element)) {
+            return $this->model->findOrFail($element);
+        }
+    }
+
+    protected function returnOrFindModelWithTrashed($element)
+    {
+        $class = $this->getClass();
+        if ($element instanceof $class) {
+            return $element;
+        }
+
+        if (is_numeric($element)) {
+            return $this->model->withTrashed()
+                ->findOrFail($element);
+        }
     }
 }
