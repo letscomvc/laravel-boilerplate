@@ -2,32 +2,32 @@
 
 namespace App\Providers;
 
-use Carbon\Carbon;
-use Illuminate\Pagination\Paginator;
+use App\Domain\Role\Policies\PermissionPolicy;
+use App\Domain\Role\Policies\RolePolicy;
+use App\Domain\Shared\Services\LaravelPermissions\Permission;
+use App\Domain\Shared\Services\LaravelPermissions\Role;
+use App\Domain\User\Models\User;
+use App\Domain\User\Policies\UserPolicy;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
     /**
-     * Bootstrap any application services.
-     *
-     * @return void
+     * Register any application services.
      */
-    public function boot()
+    public function register(): void
     {
-        setlocale(LC_MONETARY, config('app.locale').'.UTF-8');
-
-        Carbon::setLocale(config('app.locale'));
-        Paginator::useBootstrap();
+        //
     }
 
     /**
-     * Register any application services.
-     *
-     * @return void
+     * Bootstrap any application services.
      */
-    public function register()
+    public function boot(): void
     {
-        //
+        Gate::policy(User::class, UserPolicy::class);
+        Gate::policy(Role::class, RolePolicy::class);
+        Gate::policy(Permission::class, PermissionPolicy::class);
     }
 }

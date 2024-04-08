@@ -1,0 +1,56 @@
+volumes:
+  app-postgres-data:
+    driver: local
+
+services:
+  app:
+    container_name: boilerplate-app
+    user: 1000:1000
+    image: webdevops/php-nginx:8.3-alpine
+    volumes:
+      - ./project:/app
+    working_dir: /app
+    ports:
+      - 81:80
+    environment:
+      - WEB_DOCUMENT_ROOT=/app/public
+      - PHP_MEMORY_LIMIT=256M
+      - php.opcache.enable_cli=1
+
+  postgres:
+    container_name: boilerplate-postgres
+    image: postgres:16-alpine
+    volumes:
+      - app-postgres-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=app_dev
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=laraveldocker
+    ports:
+      - 5433:5432
+
+  postgres-test:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_DB=app_dev
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=laraveldocker
+    tmpfs:
+      - /var/lib/postgresql/data
+    ports:
+      - 5434:5432
+
+  redis:
+    container_name: boilerplate-redis
+    image: redis:5.0
+    command: --appendonly no
+    ports:
+      - 6379:6379
+
+  worker:
+    container_name: boilerplate-worker
+    build: environment/docker/worker/.
+    volumes:
+      - ./project:/app
+    environment:
+      - PHP_MEMORY_LIMIT=64M

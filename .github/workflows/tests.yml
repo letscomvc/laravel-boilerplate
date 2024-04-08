@@ -1,0 +1,79 @@
+name: Tests (PHPUnit)
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+      - develop
+      - feature/**
+      - hotfix/**
+      - release/**
+      - refactor/**
+    paths:
+      - '**.php'
+      - 'phpunit.xml'
+      - '.github/workflows/tests.yml'
+      - 'composer.lock'
+
+jobs:
+  tests:
+    name: Run laravel tests
+    runs-on: ubuntu-latest
+    services:
+      postgres-test:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: app_dev
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: laraveldocker
+        ports:
+          - 5432/tcp
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 3
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+      - name: Cache composer dependencies
+        uses: actions/cache@v3
+        id: composer-cache
+        with:
+          path: ./project/vendor
+          key: ${{ runner.os }}-build-${{ hashFiles('**/composer.lock') }}
+
+      - name: Run composer install
+        if: steps.composer-cache.outputs.cache-hit != 'true'
+        run: composer install -n --prefer-dist --no-progress --no-interaction --optimize-autoloader
+        working-directory: ./project
+
+      - name: Prepare Laravel Application
+        working-directory: ./project
+        run: |
+          cp .env.testing .env
+          php artisan key:generate
+
+      - name: Run tests (Unit)
+        working-directory: ./project
+        run: php artisan test --testsuite Unit
+        env:
+          DB_HOST: localhost
+          DB_PORT: ${{ job.services.postgres-test.ports[5432] }}
+
+      - name: Run tests (Feature)
+        working-directory: ./project
+        run: php artisan test --testsuite Feature
+        env:
+          DB_HOST: localhost
+          DB_PORT: ${{ job.services.postgres-test.ports[5432] }}
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@master
+        if: failure()
+        with:
+          name: Logs
+          path: ./project/storage/logs

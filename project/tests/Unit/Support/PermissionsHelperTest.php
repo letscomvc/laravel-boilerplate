@@ -3,9 +3,9 @@
 namespace Tests\Unit\Support;
 
 use App\Support\PermissionsHelper;
-use Tests\Cases\TestCaseWithoutFramework;
+use PHPUnit\Framework\TestCase;
 
-class PermissionsHelperTest extends TestCaseWithoutFramework
+class PermissionsHelperTest extends TestCase
 {
     public function testShouldKeepSimplePermissions()
     {

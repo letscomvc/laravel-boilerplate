@@ -7,11 +7,6 @@ use Illuminate\Console\Command;
 class Upgrade extends Command
 {
     /**
-     * @var bool
-     */
-    protected $routeCacheEnabled = true;
-
-    /**
      * The name and signature of the console command.
      *
      * @var string
@@ -27,42 +22,38 @@ class Upgrade extends Command
     protected $description = 'Atualizar aplicação';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
-     *
-     * @return mixed
      */
     public function handle()
     {
         $this->showCommandHeader();
 
-        $shouldConfirm = !($this->option('dev'));
+        $shouldConfirm = ! ($this->option('dev'));
         $confirmMessage = 'Tem certeza que deseja atualizar a aplicação?';
-        if ($shouldConfirm && !$this->confirm($confirmMessage)) {
-            $this->error('Cancelado.');
+        if ($shouldConfirm && ! $this->components->confirm($confirmMessage)) {
+            $this->components->error('Cancelado');
+
             return;
         }
 
         $this->executeCommands();
-        $this->info('Pronto!');
+        $this->newLine();
+        $this->components->info('Pronto!');
     }
 
     private function showCommandHeader()
     {
-        $this->info('Atualização da aplicação.');
-        $this->line('Este comando fará as seguintes ações:');
-        $this->line(' - Executar as migrações');
-        $this->line(' - Executar seeder de atualização');
-        $this->line(' - Criar cache das configurações (utilizar --dev para somente apagar o cache existente)');
+        $this->components->info('Atualização da aplicação. Este comando fará as seguintes ações:');
+        $this->components->bulletList([
+            'Executar as migrações',
+            'Executar seeder de atualização',
+            'Criar/limpar caches (eventos, rotas, configurações, views, etc.)',
+        ]);
+
+        if (! $this->option('dev')) {
+            $this->newLine();
+            $this->components->warn(' Se você estiver em ambiente de desenvolvimento, utilize --dev');
+        }
     }
 
     private function executeCommands()
@@ -77,111 +68,41 @@ class Upgrade extends Command
 
     private function executeMigrate()
     {
-        $migrationMessages = [
-            'success' => 'Migrações concluidas.',
-            'failed' => 'Erro ao rodar migrações'
-        ];
-        $this->executeWithMessages('migrate', ['--force' => true], $migrationMessages);
+        $this->components->task(
+            'Migrating Database',
+            fn () => $this->callSilent('migrate', ['--force' => true]) == 0
+        );
     }
 
     private function executeUpgradeSeeder()
     {
-        $seedMessages = [
-            'success' => 'Seeds concluidas.',
-            'failed' => 'Erro ao rodar seed de atualização.'
-        ];
-        $this->executeWithMessages(
-            'db:seed',
-            ['--class' => 'UpgradeSeeder', '--force' => true],
-            $seedMessages
+        $this->components->task(
+            'Run Upgrade Seeder',
+            fn () => $this->callSilent('db:seed', ['--class' => 'UpgradeSeeder', '--force' => true]) == 0
         );
     }
 
     private function executeMakeCaches()
     {
-        $this->cacheViews();
-        $this->cacheConfig();
-        $this->cacheEvents();
-
-        ($this->routeCacheEnabled)
-            ? $this->cacheRoutes()
-            : $this->clearRoutesCache();
+        collect([
+            'Caching Events' => fn () => $this->callSilent('event:cache') == 0,
+            'Caching Views' => fn () => $this->callSilent('view:cache') == 0,
+            'Caching Configs' => fn () => $this->callSilent('config:cache') == 0,
+            'Caching Routes' => fn () => $this->callSilent('route:cache') == 0,
+        ])->each(fn ($task, $description) => $this->components->task($description, $task));
     }
 
     private function executeClearCaches()
     {
-        $this->clearApplicationCache();
-        $this->clearRoutesCache();
-        $this->clearConfigurationsCache();
-        $this->clearViewsCache();
-    }
+        $this->newLine();
 
-    private function cacheRoutes()
-    {
-        $cacheRoutesMessages = ['success' => 'Criado cache das rotas.'];
-        $this->executeWithMessages('route:cache', [], $cacheRoutesMessages);
-    }
-
-    private function cacheConfig()
-    {
-        $cacheConfigsMessages = ['success' => 'Criado cache das configurações.'];
-        $this->executeWithMessages('config:cache', [], $cacheConfigsMessages);
-    }
-
-    private function cacheEvents()
-    {
-        $cacheEventsMessages = ['success' => 'Criado cache dos eventos.'];
-        $this->executeWithMessages('event:cache', [], $cacheEventsMessages);
-    }
-
-    private function cacheViews()
-    {
-        $cacheViewsMessages = ['success' => 'Criado cache das views.'];
-        $this->executeWithMessages('view:cache', [], $cacheViewsMessages);
-    }
-
-    private function clearRoutesCache()
-    {
-        $clearCacheRouteMessages = ['success' => 'Cache das rotas foi apagado.'];
-        $this->executeWithMessages('route:clear', [], $clearCacheRouteMessages);
-    }
-
-    private function clearConfigurationsCache()
-    {
-        $clearCacheConfigurationMessages = ['success' => 'Cache das configurações foi apagado.'];
-        $this->executeWithMessages('config:clear', [], $clearCacheConfigurationMessages);
-    }
-
-    private function clearViewsCache()
-    {
-        $clearCacheViewMessages = ['success' => 'Cache das views foi apagado.'];
-        $this->executeWithMessages('view:clear', [], $clearCacheViewMessages);
-    }
-
-    private function clearApplicationCache()
-    {
-        $clearCacheMessages = ['success' => 'Cache da aplicação foi apagado.'];
-        $this->executeWithMessages('cache:clear', [], $clearCacheMessages);
-    }
-
-    private function executeWithMessages($commandName, $commandOptions, $outputMessages = [])
-    {
-        try {
-            $this->callSilent($commandName, $commandOptions);
-            $message = data_get(
-                $outputMessages,
-                'success',
-                "Comando [$commandName] executado com sucesso"
-            );
-            $this->info($message);
-        } catch (\Exception $exception) {
-            $message = data_get(
-                $outputMessages,
-                'failed',
-                "Falha ao executar o comando [$commandName]"
-            );
-
-            $this->error("{$message} - {$exception->getMessage()}");
-        }
+        collect([
+            'Cleaning Event Cache' => fn () => $this->callSilent('event:clear') == 0,
+            'Cleaning View Cache' => fn () => $this->callSilent('view:clear') == 0,
+            'Cleaning Application Cache' => fn () => $this->callSilent('cache:clear') == 0,
+            'Cleaning Route Cache' => fn () => $this->callSilent('route:clear') == 0,
+            'Cleaning Config Cache' => fn () => $this->callSilent('config:clear') == 0,
+            'Cleaning Compiled' => fn () => $this->callSilent('clear-compiled') == 0,
+        ])->each(fn ($task, $description) => $this->components->task($description, $task));
     }
 }
