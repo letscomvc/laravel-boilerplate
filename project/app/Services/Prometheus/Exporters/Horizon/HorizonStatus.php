@@ -9,6 +9,10 @@ use Prometheus\Gauge;
 
 class HorizonStatus implements Exporter
 {
+    private const INACTIVE = -1;
+    private const PAUSED = 0;
+    private const RUNNING = 1;
+
     private Gauge $gauge;
 
     public function metrics(PrometheusService $prometheusService)
@@ -21,11 +25,12 @@ class HorizonStatus implements Exporter
 
     public function collect()
     {
-        $status = -1;
+        $status = self::INACTIVE;
         if ($masters = app(MasterSupervisorRepository::class)->all()) {
-            $status = collect($masters)->contains(function ($master) {
-                return $master->status === 'paused';
-            }) ? 0 : 1;
+            $status = collect($masters)
+                ->contains(fn ($master) => $master->status === 'paused')
+                ? self::PAUSED
+                : self::RUNNING;
         }
         $this->gauge->set($status);
     }

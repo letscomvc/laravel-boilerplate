@@ -31,4 +31,14 @@ return [
 //        \App\Services\Prometheus\Exporters\Horizon\HorizonStatus::class,
 //        \App\Services\Prometheus\Exporters\Horizon\RecentJobs::class,
     ],
+
+    /**
+     * The paths to ignore when collecting metrics.
+     */
+    'ignored_paths' => [
+        '/telescope*',
+        '/horizon*',
+        '/metrics',
+        '/api/health-check',
+    ],
 ];
